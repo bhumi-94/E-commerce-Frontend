@@ -1,11 +1,11 @@
 import React from 'react'
 
-const PrivateRoute = () => {
+const Wishlist = () => {
   return (
     <div>
-      
+      Wishlist
     </div>
   )
 }
 
-export default PrivateRoute
+export default Wishlist

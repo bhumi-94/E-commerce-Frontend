@@ -1,11 +1,11 @@
 import React from 'react'
 
-const PrivateRoute = () => {
+const Shop = () => {
   return (
     <div>
-      
+      shop
     </div>
   )
 }
 
-export default PrivateRoute
+export default Shop
