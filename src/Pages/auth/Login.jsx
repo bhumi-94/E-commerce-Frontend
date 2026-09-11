@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../features/auth/authSlice";
-
-// ================= ICONS =================
+import ForgetPassword from "./ForgotPassword";
 
 const MailIcon = ({ className = "" }) => (
   <svg
@@ -106,7 +105,6 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-  
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -115,8 +113,6 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
-  // ================= HANDLE CHANGE =================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -159,20 +155,17 @@ const Login = () => {
 
       setSuccess(response.message || "Login successful!");
 
-      // Store user
       if (response.data?.user) {
         localStorage.setItem("user", JSON.stringify(response.data.user));
       }
 
-      // Remember me
       if (rememberMe) {
         localStorage.setItem("rememberMe", "true");
       } else {
         localStorage.removeItem("rememberMe");
       }
-
       setTimeout(() => {
-        navigate("/");
+        navigate("/dashboard");
       }, 1000);
     } catch (error) {
       console.error("Login error:", error);
@@ -183,14 +176,10 @@ const Login = () => {
     }
   };
 
-  // ================= UI =================
-
   return (
     <div className="min-h-screen w-full bg-[#fcfbf8] px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
-        {/* ================= LOGIN CARD ================= */}
-
-        <div
+       <div
           className="
             w-full
             max-w-[495px]
@@ -205,8 +194,6 @@ const Login = () => {
             md:py-10
           "
         >
-          {/* ================= BRAND ================= */}
-
           <div className="mb-7 flex items-center justify-center gap-3">
             <div
               className="
@@ -238,8 +225,6 @@ const Login = () => {
               Nexora
             </h1>
           </div>
-
-          {/* ================= HEADING ================= */}
 
           <div className="mb-7 text-center">
             <h2
@@ -503,14 +488,14 @@ const Login = () => {
                 items-center
                 justify-center
                 rounded-[14px]
-                bg-[#8b3905]
+                bg-[#762f04]
                 text-base
                 font-semibold
                 text-white
                 shadow-sm
                 transition
                 duration-200
-                hover:bg-[#762f04]
+                hover:bg-[#8b3905]
                 active:scale-[0.99]
                 disabled:cursor-not-allowed
                 disabled:opacity-70
