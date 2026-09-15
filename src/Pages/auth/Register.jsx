@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { registerUser } from "../../features/auth/authSlice";
+import { registerUser } from "../../features/auth/auth.api";
 import Loading from "../../Components/common/Loading"
 
 // ================= ICONS =================

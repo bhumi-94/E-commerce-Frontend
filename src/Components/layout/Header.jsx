@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Heart, ShoppingCart, User } from "lucide-react";
+import { Bell, Heart, ShoppingCart, User } from "lucide-react";
 import Banner from "./Banner";
 import Logo from "../common/Logo";
 
@@ -106,7 +106,7 @@ const Header = () => {
               }}
               className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100 transition"
             >
-              <ShoppingCart size={21} className="text-gray-700" />
+              <Bell size={21} className="text-gray-700" />
             </button>
 
             <Link

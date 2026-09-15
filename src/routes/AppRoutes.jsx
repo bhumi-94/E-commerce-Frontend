@@ -13,6 +13,7 @@ import Deals from "../Pages/dashboard/Deals";
 import Wishlist from "../Pages/dashboard/Wishlist";
 import Cart from "../Pages/dashboard/Cart";
 import Profile from "../Pages/dashboard/Profile";
+import Notification from "../Pages/dashboard/Notification"
 import MainLayout from "../layouts/MainLayout";
 
 const AppRoutes = () => {
@@ -31,6 +32,7 @@ const AppRoutes = () => {
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path='/wishlist' element={<Wishlist />} />
         <Route path='/cart' element={<Cart />} />
+        <Route path='/notification' element={<Notification />} />
         <Route path='/profile' element={<Profile />} />
       </Route>
       
