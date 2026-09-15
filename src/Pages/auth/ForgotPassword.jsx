@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, ArrowLeft } from "lucide-react";
-import { forgotPassword } from "../../features/auth/authSlice";
+import { forgotPassword } from "../../features/auth/auth.api";
 
 
 const ForgotPassword = () => {

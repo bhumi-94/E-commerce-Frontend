@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../features/auth/authSlice";
-import ForgetPassword from "./ForgotPassword";
+import { loginUser } from "../../features/auth/auth.api";
 
 const MailIcon = ({ className = "" }) => (
   <svg
