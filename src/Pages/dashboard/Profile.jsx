@@ -12,8 +12,9 @@ import {
   CheckCircle,
   Camera,
 } from "lucide-react";
+import Loading from "../../Components/common/Loading";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile, saveProfile } from "../../features/profile/profileSlice";
+import { fetchProfile, saveProfile } from "../../features/profile/ProfileSlice";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -48,7 +49,6 @@ const Profile = () => {
         gender: user.gender || "",
       });
 
-      // Show image stored in DB
       if (user.profile_image) {
         setPreviewImage(`http://localhost:3000${user.profile_image}`);
       } else {
@@ -102,15 +102,10 @@ const Profile = () => {
 
   const handleSave = async () => {
     const data = new FormData();
-
     data.append("first_name", formData.first_name);
-
     data.append("last_name", formData.last_name);
-
     data.append("phone", formData.phone);
-
     data.append("date_of_birth", formData.date_of_birth);
-
     data.append("gender", formData.gender);
 
     if (selectedImage) {
@@ -161,9 +156,10 @@ const Profile = () => {
   };
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#fcfbf8]">
-        <p className="text-[#8b3905] font-medium">Loading profile...</p>
-      </div>
+      <Loading />
+      // <div className="min-h-screen flex items-center justify-center bg-[#fcfbf8]">
+      //   <p className="text-[#8b3905] font-medium">Loading profile...</p>
+      // </div>
     );
   }
 
