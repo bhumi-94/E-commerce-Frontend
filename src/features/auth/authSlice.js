@@ -1,48 +1,41 @@
-import {
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { registerUser, loginUser } from "./auth.api";
 
-import {
-  registerUser,
-  loginUser,
-} from "./auth.api";
-
-
+// =========================
+// REGISTER USER
+// =========================
 export const registerUserThunk = createAsyncThunk(
   "auth/registerUser",
   async (data, { rejectWithValue }) => {
     try {
       const response = await registerUser(data);
-
       return response;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Registration failed"
+        error.response?.data?.message || "Registration failed",
       );
     }
-  }
+  },
 );
 
-
+// =========================
+// LOGIN USER
+// =========================
 export const loginUserThunk = createAsyncThunk(
   "auth/loginUser",
   async (data, { rejectWithValue }) => {
     try {
       const response = await loginUser(data);
-
       return response;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message ||
-          "Login failed"
-      );
+      return rejectWithValue(error.response?.data?.message || "Login failed");
     }
-  }
+  },
 );
 
-
+// =========================
+// INITIAL STATE
+// =========================
 const initialState = {
   user: null,
   isAuthenticated: false,
@@ -51,10 +44,11 @@ const initialState = {
   successMessage: "",
 };
 
-
+// =========================
+// AUTH SLICE
+// =========================
 const authSlice = createSlice({
   name: "auth",
-
   initialState,
 
   reducers: {
@@ -75,82 +69,74 @@ const authSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-
+    // =========================
+    // REGISTER
+    // =========================
     builder
-      .addCase(
-        registerUserThunk.pending,
-        (state) => {
-          state.loading = true;
-          state.error = null;
-          state.successMessage = "";
-        }
-      )
+      .addCase(registerUserThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = "";
+      })
 
-      .addCase(
-        registerUserThunk.fulfilled,
-        (state, action) => {
-          state.loading = false;
+      .addCase(registerUserThunk.fulfilled, (state, action) => {
+        state.loading = false;
 
-          state.successMessage =
-            action.payload?.message ||
-            "Registration successful";
+        state.successMessage =
+          action.payload?.message || "Registration successful";
 
-          state.error = null;
-        }
-      )
+        state.error = null;
+      })
 
-      .addCase(
-        registerUserThunk.rejected,
-        (state, action) => {
-          state.loading = false;
-          state.error = action.payload;
-        }
-      );
+      .addCase(registerUserThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
 
+    // =========================
+    // LOGIN
+    // =========================
     builder
-      .addCase(
-        loginUserThunk.pending,
-        (state) => {
-          state.loading = true;
-          state.error = null;
-          state.successMessage = "";
-        }
-      )
+      .addCase(loginUserThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.successMessage = "";
+      })
 
-      .addCase(
-        loginUserThunk.fulfilled,
-        (state, action) => {
-          state.loading = false;
+      .addCase(loginUserThunk.fulfilled, (state, action) => {
+        state.loading = false;
 
-          state.user =
-            action.payload?.user || null;
+        // IMPORTANT:
+        // Backend response:
+        // {
+        //   success: true,
+        //   message: "Login successful",
+        //   data: {
+        //     user: {...}
+        //   }
+        // }
 
-          state.isAuthenticated = true;
+        state.user = action.payload?.data?.user || null;
 
-          state.successMessage =
-            action.payload?.message ||
-            "Login successful";
+        state.isAuthenticated = !!action.payload?.data?.user;
 
-          state.error = null;
-        }
-      )
+        state.successMessage = action.payload?.message || "Login successful";
 
-      .addCase(
-        loginUserThunk.rejected,
-        (state, action) => {
-          state.loading = false;
-          state.isAuthenticated = false;
-          state.error = action.payload;
-        }
-      );
+        state.error = null;
+      })
+
+      .addCase(loginUserThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.error = action.payload;
+      });
   },
 });
 
-export const {
-  clearAuthError,
-  clearAuthMessage,
-  logout,
-} = authSlice.actions;
-
+// =========================
+// EXPORT ACTIONS
+// =========================
+export const { clearAuthError, clearAuthMessage, logout } = authSlice.actions;
 
 export default authSlice.reducer;

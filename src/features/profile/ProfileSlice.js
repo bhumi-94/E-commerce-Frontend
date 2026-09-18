@@ -13,9 +13,6 @@ export const fetchProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getProfile();
-
-      console.log("PROFILE API RESPONSE:", response);
-
       return response.user;
     } catch (error) {
       console.error(
@@ -36,7 +33,6 @@ export const saveProfile = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await updateProfile(data);
-
       return response.user;
     } catch (error) {
       console.error(

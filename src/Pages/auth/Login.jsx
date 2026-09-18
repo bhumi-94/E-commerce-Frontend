@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../features/auth/auth.api";
+import { useDispatch } from "react-redux";
+import { loginUserThunk } from "../../features/auth/authSlice";
 
 const MailIcon = ({ className = "" }) => (
   <svg
@@ -18,7 +19,6 @@ const MailIcon = ({ className = "" }) => (
     <path d="m3 7 9 6 9-6" />
   </svg>
 );
-
 const LockIcon = ({ className = "" }) => (
   <svg
     className={className}
@@ -35,7 +35,6 @@ const LockIcon = ({ className = "" }) => (
     <path d="M8 10V7a4 4 0 0 1 8 0v3" />
   </svg>
 );
-
 const EyeIcon = ({ className = "" }) => (
   <svg
     className={className}
@@ -52,7 +51,6 @@ const EyeIcon = ({ className = "" }) => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 );
-
 const EyeOffIcon = ({ className = "" }) => (
   <svg
     className={className}
@@ -100,6 +98,7 @@ const GoogleIcon = () => (
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -130,6 +129,49 @@ const Login = () => {
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   setError("");
+  //   setSuccess("");
+
+  //   if (!formData.email.trim() || !formData.password) {
+  //     setError("Please enter your email and password.");
+  //     return;
+  //   }
+
+  //   try {
+  //     setLoading(true);
+
+  //     const response = await loginUser({
+  //       email: formData.email.trim().toLowerCase(),
+  //       password: formData.password,
+  //       rememberMe,
+  //     });
+
+  //     // console.log("Login response:", response);
+
+  //     setSuccess(response.message || "Login successful!");
+
+  //     if (response.data?.user) {
+  //       localStorage.setItem("user", JSON.stringify(response.data.user));
+  //     }
+  //     if (rememberMe) {
+  //       localStorage.setItem("rememberMe", "true");
+  //     } else {
+  //       localStorage.removeItem("rememberMe");
+  //     }
+  //     setTimeout(() => {
+  //       navigate("/dashboard");
+  //     }, 1000);
+  //   } catch (error) {
+  //     console.error("Login error:", error);
+
+  //     setError(error.response?.data?.message || "Invalid email or password.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -144,28 +186,25 @@ const Login = () => {
     try {
       setLoading(true);
 
-      const response = await loginUser({
-        email: formData.email.trim().toLowerCase(),
-        password: formData.password,
-        rememberMe,
-      });
+      const result = await dispatch(
+        loginUserThunk({
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password,
+          rememberMe,
+        }),
+      );
 
-      console.log("Login response:", response);
+      if (loginUserThunk.fulfilled.match(result)) {
+        setSuccess(result.payload?.message || "Login successful!");
 
-      setSuccess(response.message || "Login successful!");
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 1000);
 
-      if (response.data?.user) {
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        return;
       }
 
-      if (rememberMe) {
-        localStorage.setItem("rememberMe", "true");
-      } else {
-        localStorage.removeItem("rememberMe");
-      }
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
+      setError(result.payload || "Invalid email or password.");
     } catch (error) {
       console.error("Login error:", error);
 
@@ -174,11 +213,10 @@ const Login = () => {
       setLoading(false);
     }
   };
-
   return (
     <div className="min-h-screen w-full bg-[#fcfbf8] px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
-       <div
+        <div
           className="
             w-full
             max-w-[495px]

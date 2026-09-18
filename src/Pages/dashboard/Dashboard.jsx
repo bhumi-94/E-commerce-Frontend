@@ -1,9 +1,82 @@
 import React from "react";
-import { ArrowRight, Check, Star } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Star,
+  Monitor,
+  Shirt,
+  Sparkles,
+  Home as HomeIcon,
+  Dumbbell,
+  BookOpen,
+  Watch,
+  Footprints,
+  ShoppingBag,
+} from "lucide-react";
 import { Link } from "react-router-dom";
-import Nexora from "../../assets/Nexora.png"
+import Nexora from "../../assets/Nexora.png";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCategories } from "../../features/category/categorySlice";
+import Loading from "../../Components/common/Loading";
+import { fetchProducts } from "../../features/product/productSlice";
+import Card from "../../Components/common/Card";
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  const { categories, loading, error } = useSelector((state) => state.category);
+  const {
+    products,
+    loading: productsLoading,
+    error: productsError,
+  } = useSelector((state) => state.product);
+
+  console.log("PRODUCTS IN HOME:", products);
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  const getCategoryIcon = (categoryName) => {
+    const name = categoryName.toLowerCase();
+
+    if (name.includes("electronic")) {
+      return Monitor;
+    }
+
+    if (name.includes("fashion")) {
+      return Shirt;
+    }
+
+    if (name.includes("beauty")) {
+      return Sparkles;
+    }
+
+    if (name.includes("home")) {
+      return HomeIcon;
+    }
+
+    if (name.includes("sport")) {
+      return Dumbbell;
+    }
+
+    if (name.includes("book")) {
+      return BookOpen;
+    }
+
+    if (name.includes("accessor")) {
+      return Watch;
+    }
+
+    if (name.includes("footwear")) {
+      return Footprints;
+    }
+
+    return ShoppingBag;
+  };
+
   return (
     <section className="min-h-[calc(100vh-68px)] bg-[#FCFBF3]">
       {/* HERO SECTION */}
@@ -104,7 +177,9 @@ const Home = () => {
                 </div>
 
                 <div>
-                  <p className="text-sm font-semibold text-[#211f1d]">Free Delivery</p>
+                  <p className="text-sm font-semibold text-[#211f1d]">
+                    Free Delivery
+                  </p>
 
                   <p className="text-xs text-[#aaa39e]">On orders ₹999+</p>
                 </div>
@@ -113,6 +188,208 @@ const Home = () => {
           </div>
         </div>
       </div>
+      {/* <div></div> */}
+
+      {/* CATEGORY SECTION */}
+      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-20 mt-20">
+        {/* Section Header */}
+        <div className="flex items-end justify-between mb-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[2px] text-[#a14b0b] mb-2">
+              Explore
+            </p>
+
+            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#211f1d]">
+              Shop by Category
+            </h2>
+
+            <p className="mt-2 text-[#8d8580] text-base lg:text-lg">
+              Explore our wide range of categories
+            </p>
+          </div>
+
+          <Link
+            to="/shop"
+            className="hidden sm:flex items-center gap-2 text-[#8b3905] font-semibold hover:gap-3 transition-all duration-300"
+          >
+            View All
+            <ArrowRight size={19} />
+          </Link>
+        </div>
+
+        {/* Loading */}
+        {loading && (
+          <div className="flex justify-center py-10">
+            <Loading />
+          </div>
+        )}
+
+        {/* Error */}
+        {error && !loading && (
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-600">
+            {error}
+          </div>
+        )}
+
+        {/* Category Cards */}
+        {!loading && !error && categories.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
+            {categories.map((category) => {
+              const Icon = getCategoryIcon(category.name);
+
+              const imageUrl = category.image
+                ? `http://localhost:3000${category.image}`
+                : null;
+
+              return (
+                <Link
+                  key={category.id}
+                  to={`/shop?category=${category.id}`}
+                  className="group"
+                >
+                  <div
+                    className="
+                relative
+                h-[190px]
+                rounded-[22px]
+                bg-white
+                border border-[#eee8e2]
+                overflow-hidden
+                transition-all
+                duration-300
+                hover:-translate-y-2
+                hover:shadow-[0_15px_35px_rgba(70,45,30,0.12)]
+                hover:border-[#e8c99e]
+              "
+                  >
+                    {/* Image / Icon Area */}
+                    <div className="relative h-[125px] overflow-hidden bg-[#f5eee7]">
+                      {imageUrl ? (
+                        <img
+                          src={imageUrl}
+                          alt={category.name}
+                          className="
+                      w-full
+                      h-full
+                      object-cover
+                      transition-transform
+                      duration-500
+                      group-hover:scale-110
+                    "
+                        />
+                      ) : (
+                        <div
+                          className="
+                    w-full
+                    h-full
+                    flex
+                    items-center
+                    justify-center
+                    bg-gradient-to-br
+                    from-[#fff8ef]
+                    to-[#f2e3d4]
+                  "
+                        >
+                          <div
+                            className="
+                      w-16
+                      h-16
+                      rounded-2xl
+                      bg-white
+                      shadow-sm
+                      flex
+                      items-center
+                      justify-center
+                      text-[#8b3905]
+                      transition-all
+                      duration-300
+                      group-hover:scale-110
+                    "
+                          >
+                            <Icon size={30} strokeWidth={1.7} />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Soft overlay */}
+                      <div
+                        className="
+                  absolute
+                  inset-0
+                  bg-gradient-to-t
+                  from-black/10
+                  to-transparent
+                  opacity-0
+                  group-hover:opacity-100
+                  transition-opacity
+                  duration-300
+                "
+                      />
+                    </div>
+
+                    {/* Category Name */}
+                    <div className="px-3 py-4 text-center">
+                      <h3
+                        className="
+                  text-sm
+                  lg:text-[15px]
+                  font-semibold
+                  text-[#211f1d]
+                  truncate
+                  group-hover:text-[#8b3905]
+                  transition-colors
+                  duration-300
+                "
+                      >
+                        {category.name}
+                      </h3>
+
+                      <div
+                        className="
+                  flex
+                  items-center
+                  justify-center
+                  gap-1
+                  mt-1
+                  text-xs
+                  text-[#a49b94]
+                "
+                      >
+                        <span>Explore</span>
+                        <ArrowRight
+                          size={12}
+                          className="
+                      transition-transform
+                      duration-300
+                      group-hover:translate-x-1
+                    "
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
+        {/* No categories */}
+        {!loading && !error && categories.length === 0 && (
+          <div
+            className="
+      text-center
+      py-12
+      rounded-2xl
+      border
+      border-dashed
+      border-[#ddd3ca]
+      text-[#8d8580]
+    "
+          >
+            No categories available.
+          </div>
+        )}
+      </section>
     </section>
   );
 };
