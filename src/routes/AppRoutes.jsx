@@ -6,7 +6,6 @@ import Dashboard from "../Pages/dashboard/Dashboard";
 import ForgetPassword from "../Pages/auth/ForgotPassword";
 import ErrorPage from "../Components/layout/ErrorPage";
 import ResetPassword from "../Pages/auth/ResetPassword";
-import Home from "../Pages/dashboard/Home";
 import Shop from "../Pages/dashboard/Shop";
 import Electronics from "../Pages/dashboard/Electronics";
 import Deals from "../Pages/dashboard/Deals";
@@ -25,7 +24,6 @@ const AppRoutes = () => {
       <Route path="/reset-password/:token" element={<ResetPassword />} />
 
       <Route element={<MainLayout /> } >
-        <Route path='/home' element={<Home />} />
         <Route path='/shop' element={<Shop />} />
         <Route path='/electronics' element={<Electronics />} />
         <Route path='/deals' element={<Deals />} />
@@ -35,8 +33,6 @@ const AppRoutes = () => {
         <Route path='/notification' element={<Notification />} />
         <Route path='/profile' element={<Profile />} />
       </Route>
-      
-
       <Route path="*" element={<ErrorPage />} />
     </Routes>
   );
