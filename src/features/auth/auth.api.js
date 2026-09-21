@@ -24,3 +24,7 @@ export const resetPassword = async (token, password, confirmPassword) => {
 
   return response.data;
 };
+export const logoutUser = async () => {
+  const response = await api.post("/auth/logout");
+  return response.data;
+};

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUserThunk } from "../../features/auth/authSlice";
+import { fetchProfile } from "../../features/profile/ProfileSlice";
 
 const MailIcon = ({ className = "" }) => (
   <svg
@@ -114,64 +115,17 @@ const Login = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
     if (error) {
       setError("");
     }
-
     if (success) {
       setSuccess("");
     }
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   setError("");
-  //   setSuccess("");
-
-  //   if (!formData.email.trim() || !formData.password) {
-  //     setError("Please enter your email and password.");
-  //     return;
-  //   }
-
-  //   try {
-  //     setLoading(true);
-
-  //     const response = await loginUser({
-  //       email: formData.email.trim().toLowerCase(),
-  //       password: formData.password,
-  //       rememberMe,
-  //     });
-
-  //     // console.log("Login response:", response);
-
-  //     setSuccess(response.message || "Login successful!");
-
-  //     if (response.data?.user) {
-  //       localStorage.setItem("user", JSON.stringify(response.data.user));
-  //     }
-  //     if (rememberMe) {
-  //       localStorage.setItem("rememberMe", "true");
-  //     } else {
-  //       localStorage.removeItem("rememberMe");
-  //     }
-  //     setTimeout(() => {
-  //       navigate("/dashboard");
-  //     }, 1000);
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-
-  //     setError(error.response?.data?.message || "Invalid email or password.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -192,23 +146,20 @@ const Login = () => {
           password: formData.password,
           rememberMe,
         }),
-      );
-
-      if (loginUserThunk.fulfilled.match(result)) {
-        setSuccess(result.payload?.message || "Login successful!");
-
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 1000);
-
-        return;
-      }
-
-      setError(result.payload || "Invalid email or password.");
+      ).unwrap();
+      setSuccess(result?.message || "Login successful!");
+      await dispatch(fetchProfile()).unwrap();
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       console.error("Login error:", error);
 
-      setError(error.response?.data?.message || "Invalid email or password.");
+      setError(
+        typeof error === "string"
+          ? error
+          : error?.response?.data?.message ||
+              error?.message ||
+              "Invalid email or password.",
+      );
     } finally {
       setLoading(false);
     }

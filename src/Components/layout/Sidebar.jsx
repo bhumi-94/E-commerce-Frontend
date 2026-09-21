@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 const Sidebar = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const menuItems = [
     {
@@ -51,13 +51,16 @@ const Sidebar = () => {
       icon: Settings,
     },
   ];
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-
-    navigate("/login", { replace: true });
-  };
-
+  //  const handleLogout = async () => {
+  //     try {
+  //       await dispatch(logoutUserThunk()).unwrap();
+  //       dispatch(clearProfile());
+  //       setProfileOpen(false);
+  //       navigate("/", { replace: true });
+  //     } catch (error) {
+  //       console.error("Logout error:", error);
+  //     }
+  //   };
   return (
     <aside className="w-full lg:w-[260px] shrink-0">
       <div className="bg-white rounded-[22px] border border-[#eee8e3] p-3 shadow-sm">
@@ -89,7 +92,7 @@ const Sidebar = () => {
         <div className="my-3 border-t border-[#eee8e3]" />
 
         {/* Logout */}
-        <button
+        {/* <button
           type="button"
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition"
@@ -97,7 +100,7 @@ const Sidebar = () => {
           <LogOut size={19} strokeWidth={1.8} />
 
           <span>Logout</span>
-        </button>
+        </button> */}
         {/* <Logout /> */}
       </div>
     </aside>
