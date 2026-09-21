@@ -150,9 +150,7 @@ const Shop = () => {
               className="
                 h-11
                 px-4
-                bg-white
-                borde
-                border-[#e5ded8]
+                bg-[#f5eee7]
                 rounded-xl
                 text-sm
                 text-[#403c39]
@@ -165,50 +163,6 @@ const Shop = () => {
               <option value="price-low">Price: Low to High</option>
               <option value="price-high">Price: High to Low</option>
             </select>
-
-            <div
-              className="
-              flex
-              bg-white
-              border
-              border-[#e5ded8]
-              rounded-xl
-              overflow-hidden
-            "
-            >
-              <button
-                type="button"
-                onClick={() => setViewMode("grid")}
-                className={`
-                  w-11 h-11
-                  flex items-center justify-center
-                  transition
-                  ${
-                    viewMode === "grid"
-                      ? "bg-[#8b3905] text-white"
-                      : "text-[#77716d]"
-                  }
-                `}
-              >
-                <Grid3X3 size={18} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setViewMode("list")}
-                className={`
-                  w-11 h-11
-                  flex items-center justify-center
-                  transition
-                  ${
-                    viewMode === "list"
-                      ? "bg-[#8b3905] text-white"
-                      : "text-[#77716d]"
-                  }
-                `}
-              >
-                <List size={18} />
-              </button>
-            </div>
           </div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-7 mt-8">

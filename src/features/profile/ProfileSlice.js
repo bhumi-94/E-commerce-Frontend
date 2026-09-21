@@ -1,12 +1,5 @@
-import {
-  createAsyncThunk,
-  createSlice,
-} from "@reduxjs/toolkit";
-
-import {
-  getProfile,
-  updateProfile,
-} from "./profile.api";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { getProfile, updateProfile } from "./profile.api";
 
 export const fetchProfile = createAsyncThunk(
   "profile/fetchProfile",
@@ -17,15 +10,14 @@ export const fetchProfile = createAsyncThunk(
     } catch (error) {
       console.error(
         "FETCH PROFILE ERROR:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
 
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to fetch profile"
+        error.response?.data?.message || "Failed to fetch profile",
       );
     }
-  }
+  },
 );
 
 export const saveProfile = createAsyncThunk(
@@ -37,34 +29,38 @@ export const saveProfile = createAsyncThunk(
     } catch (error) {
       console.error(
         "UPDATE PROFILE ERROR:",
-        error.response?.data || error.message
+        error.response?.data || error.message,
       );
 
       return rejectWithValue(
-        error.response?.data?.message ||
-          "Failed to update profile"
+        error.response?.data?.message || "Failed to update profile",
       );
     }
-  }
+  },
 );
-const initialState = {
-  user: null,
-  loading: false,
-  updating: false,
-  error: null,
-  successMessage: "",
-};
-
-
 const profileSlice = createSlice({
   name: "profile",
 
-  initialState,
+  initialState: {
+    user: null,
+    loading: false,
+    updating: false,
+    error: null,
+    successMessage: "",
+  },
 
   reducers: {
     clearProfileMessage: (state) => {
       state.successMessage = "";
       state.error = null;
+    },
+
+    clearProfile: (state) => {
+      state.user = null;
+      state.loading = false;
+      state.updating = false;
+      state.error = null;
+      state.successMessage = "";
     },
   },
 
@@ -72,63 +68,40 @@ const profileSlice = createSlice({
     builder
 
       // FETCH PROFILE
-      .addCase(
-        fetchProfile.pending,
-        (state) => {
-          state.loading = true;
-          state.error = null;
-        }
-      )
+      .addCase(fetchProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
 
-      .addCase(
-        fetchProfile.fulfilled,
-        (state, action) => {
-          state.loading = false;
-          state.user = action.payload;
-          state.error = null;
-        }
-      )
+      .addCase(fetchProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.error = null;
+      })
 
-      .addCase(
-        fetchProfile.rejected,
-        (state, action) => {
-          state.loading = false;
-          state.error = action.payload;
-        }
-      )
+      .addCase(fetchProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
 
       // UPDATE PROFILE
-      .addCase(
-        saveProfile.pending,
-        (state) => {
-          state.updating = true;
-          state.error = null;
-          state.successMessage = "";
-        }
-      )
+      .addCase(saveProfile.pending, (state) => {
+        state.updating = true;
+        state.error = null;
+        state.successMessage = "";
+      })
 
-      .addCase(
-        saveProfile.fulfilled,
-        (state, action) => {
-          state.updating = false;
-          state.user = action.payload;
-          state.successMessage =
-            "Profile updated successfully";
-        }
-      )
+      .addCase(saveProfile.fulfilled, (state, action) => {
+        state.updating = false;
+        state.user = action.payload;
+        state.successMessage = "Profile updated successfully";
+      })
 
-      .addCase(
-        saveProfile.rejected,
-        (state, action) => {
-          state.updating = false;
-          state.error = action.payload;
-        }
-      );
+      .addCase(saveProfile.rejected, (state, action) => {
+        state.updating = false;
+        state.error = action.payload;
+      });
   },
 });
-
-export const {
-  clearProfileMessage,
-} = profileSlice.actions;
-
+export const { clearProfileMessage, clearProfile } = profileSlice.actions;
 export default profileSlice.reducer;

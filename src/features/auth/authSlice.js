@@ -1,14 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { registerUser, loginUser } from "./auth.api";
+import { registerUser, loginUser, logoutUser } from "./auth.api";
+import { fetchProfile } from "../profile/ProfileSlice";
 
-// =========================
-// REGISTER USER
-// =========================
 export const registerUserThunk = createAsyncThunk(
   "auth/registerUser",
+
   async (data, { rejectWithValue }) => {
     try {
       const response = await registerUser(data);
+
       return response;
     } catch (error) {
       return rejectWithValue(
@@ -18,14 +18,13 @@ export const registerUserThunk = createAsyncThunk(
   },
 );
 
-// =========================
-// LOGIN USER
-// =========================
 export const loginUserThunk = createAsyncThunk(
   "auth/loginUser",
+
   async (data, { rejectWithValue }) => {
     try {
       const response = await loginUser(data);
+
       return response;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || "Login failed");
@@ -33,9 +32,22 @@ export const loginUserThunk = createAsyncThunk(
   },
 );
 
-// =========================
-// INITIAL STATE
-// =========================
+export const logoutUserThunk = createAsyncThunk(
+  "auth/logoutUser",
+
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await logoutUser();
+
+      return response;
+    } catch (error) {
+      console.error("LOGOUT API ERROR:", error.response?.data || error.message);
+
+      return rejectWithValue(error.response?.data?.message || "Logout failed");
+    }
+  },
+);
+
 const initialState = {
   user: null,
   isAuthenticated: false,
@@ -44,11 +56,9 @@ const initialState = {
   successMessage: "",
 };
 
-// =========================
-// AUTH SLICE
-// =========================
 const authSlice = createSlice({
   name: "auth",
+
   initialState,
 
   reducers: {
@@ -63,15 +73,13 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      state.loading = false;
       state.error = null;
       state.successMessage = "";
     },
   },
 
   extraReducers: (builder) => {
-    // =========================
-    // REGISTER
-    // =========================
     builder
       .addCase(registerUserThunk.pending, (state) => {
         state.loading = true;
@@ -93,9 +101,6 @@ const authSlice = createSlice({
         state.error = action.payload;
       });
 
-    // =========================
-    // LOGIN
-    // =========================
     builder
       .addCase(loginUserThunk.pending, (state) => {
         state.loading = true;
@@ -106,22 +111,11 @@ const authSlice = createSlice({
       .addCase(loginUserThunk.fulfilled, (state, action) => {
         state.loading = false;
 
-        // IMPORTANT:
         // Backend response:
-        // {
-        //   success: true,
-        //   message: "Login successful",
-        //   data: {
-        //     user: {...}
-        //   }
-        // }
-
+        // data.user
         state.user = action.payload?.data?.user || null;
-
         state.isAuthenticated = !!action.payload?.data?.user;
-
         state.successMessage = action.payload?.message || "Login successful";
-
         state.error = null;
       })
 
@@ -131,12 +125,31 @@ const authSlice = createSlice({
         state.user = null;
         state.error = action.payload;
       });
+
+    builder
+      .addCase(logoutUserThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(logoutUserThunk.fulfilled, (state, action) => {
+        state.loading = false;
+
+        state.user = null;
+        state.isAuthenticated = false;
+
+        state.successMessage = action.payload?.message || "Logout successful";
+
+        state.error = null;
+      })
+
+      .addCase(logoutUserThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-// =========================
-// EXPORT ACTIONS
-// =========================
 export const { clearAuthError, clearAuthMessage, logout } = authSlice.actions;
 
 export default authSlice.reducer;
