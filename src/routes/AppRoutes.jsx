@@ -23,6 +23,9 @@ import MainLayout from "../layouts/MainLayout";
 
 import { fetchProfile } from "../features/profile/ProfileSlice";
 
+import { fetchCart } from "../features/cart/cartSlice";
+import { fetchWishlist } from "../features/wishlist/wishlistSlice";
+
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.profile);
   if (!user) {
@@ -43,6 +46,13 @@ const AppRoutes = () => {
   const dispatch = useDispatch();
   const { user, loading } = useSelector((state) => state.profile);
   const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    dispatch(fetchCart());
+    dispatch(fetchWishlist());
+  }, [dispatch, user?.id]);
 
   useEffect(() => {
     const checkAuthentication = async () => {

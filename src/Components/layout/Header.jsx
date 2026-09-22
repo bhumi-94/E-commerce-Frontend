@@ -22,8 +22,10 @@ const Header = () => {
   // const { user, isAuthenticated } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.profile);
   const isAuthenticated = !!user;
-  const cartItems = useSelector((state) => state.cart.items);
-  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const cartItems = useSelector((state) => state.cart?.items || []);
+
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
+
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const wishlistCount = wishlistItems.length;
   useEffect(() => {

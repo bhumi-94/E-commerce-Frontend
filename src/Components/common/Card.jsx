@@ -3,7 +3,7 @@ import { Heart, ShoppingCart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { addToCart } from "../../features/cart/cartSlice";
+import { addProductToCart } from "../../features/cart/cartSlice";
 
 import {
   addToWishlist,
@@ -32,7 +32,7 @@ const Card = ({ product }) => {
     e.stopPropagation();
 
     dispatch(
-      addToCart({
+      addProductToCart({
         product,
         quantity: 1,
       }),
