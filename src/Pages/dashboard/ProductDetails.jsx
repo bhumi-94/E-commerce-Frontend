@@ -2,21 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Heart, Minus, Plus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link, useNavigate } from "react-router-dom";
-
 import Loading from "../../Components/common/Loading";
 import Card from "../../Components/common/Card";
-
 import {
   fetchProducts,
   fetchProductById,
   clearSelectedProduct,
 } from "../../features/product/productSlice";
-
 import {
   addToWishlist,
   removeFromWishlist,
 } from "../../features/wishlist/wishlistSlice";
-
 import { addProductToCart } from "../../features/cart/cartSlice";
 
 const ProductDetails = () => {
@@ -28,7 +24,7 @@ const ProductDetails = () => {
   const { selectedProduct, products, productLoading, productError } =
     useSelector((state) => state.product);
 
-  const wishlistItems = useSelector((state) => state.wishlist.items);
+  const wishlistItems = useSelector((state) => state.wishlist?.items || [])
 
   const [quantity, setQuantity] = useState(1);
 
@@ -43,17 +39,13 @@ const ProductDetails = () => {
       dispatch(fetchProducts());
     }
   }, [products.length, dispatch]);
-
-  // ================= CLEAR PRODUCT =================
-
   useEffect(() => {
     return () => {
       dispatch(clearSelectedProduct());
     };
   }, [dispatch]);
 
-  // ================= LOADING =================
-
+  
   if (productLoading) {
     return (
       <div className="min-h-screen bg-[#FCFBF3] flex items-center justify-center">
@@ -61,9 +53,6 @@ const ProductDetails = () => {
       </div>
     );
   }
-
-  // ================= ERROR =================
-
   if (productError) {
     return (
       <div className="min-h-screen bg-[#FCFBF3] flex flex-col items-center justify-center px-6">
@@ -78,9 +67,6 @@ const ProductDetails = () => {
       </div>
     );
   }
-
-  // ================= PRODUCT NOT READY =================
-
   if (!selectedProduct) {
     return (
       <div className="min-h-screen bg-[#FCFBF3] flex items-center justify-center">
@@ -88,33 +74,15 @@ const ProductDetails = () => {
       </div>
     );
   }
-
-  // ================= PRODUCT =================
-
   const product = selectedProduct;
-
-  // ================= RELATED PRODUCTS =================
-
   const relatedProducts = products.filter(
     (item) =>
       Number(item.category_id) === Number(product.category_id) &&
       Number(item.id) !== Number(product.id),
   );
-
-  // ================= IMAGE =================
-
   const imageUrl = product.image
     ? `http://localhost:3000${product.image}`
     : null;
-
-  // ================= WISHLIST =================
-
-  const isWishlisted = wishlistItems.some(
-    (item) => Number(item.id) === Number(product.id),
-  );
-
-  // ================= QUANTITY =================
-
   const increaseQuantity = () => {
     if (quantity < Number(product.stock_quantity || 1)) {
       setQuantity((prev) => prev + 1);
@@ -126,9 +94,6 @@ const ProductDetails = () => {
       setQuantity((prev) => prev - 1);
     }
   };
-
-  // ================= ADD TO CART =================
-
   const handleAddToCart = () => {
     dispatch(
       addProductToCart({
@@ -137,12 +102,9 @@ const ProductDetails = () => {
       }),
     );
   };
-
-  // ================= BUY NOW =================
-
   const handleBuyNow = () => {
     dispatch(
-      addToCart({
+      addProductToCart({
         product,
         quantity,
       }),
@@ -154,17 +116,22 @@ const ProductDetails = () => {
 
     navigate("/cart");
   };
+  const handleWishlist = async () => {
+    if (!product?.id) return;
 
-  // ================= WISHLIST =================
-
-  const handleWishlist = () => {
-    if (isWishlisted) {
-      dispatch(removeFromWishlist(product.id));
-    } else {
-      dispatch(addToWishlist(product));
+    try {
+      if (isWishlisted) {
+        await dispatch(removeFromWishlist(product.id)).unwrap();
+      } else {
+        await dispatch(addToWishlist(product)).unwrap();
+      }
+    } catch (error) {
+      console.error("WISHLIST ERROR:", error);
     }
   };
-
+  const isWishlisted = wishlistItems.some(
+    (item) => Number(item.product_id) === Number(product?.id),
+  );
   return (
     <section className="min-h-screen bg-white">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
@@ -322,11 +289,10 @@ const ProductDetails = () => {
               </button>
 
               {/* WISHLIST */}
-
               <button
                 type="button"
                 onClick={handleWishlist}
-                className="w-12 h-12 rounded-xl border border-[#e5ddd5] flex items-center justify-center hover:bg-[#f8f1eb] transition"
+                className="w-12 h-12 rounded-full border border-[#e5ddd5] flex items-center justify-center hover:bg-[#f8f1eb] transition"
               >
                 <Heart
                   size={22}

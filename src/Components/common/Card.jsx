@@ -13,13 +13,10 @@ import {
 const Card = ({ product }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const wishlistItems = useSelector((state) => state.wishlist.items);
-
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
   const isWishlisted = wishlistItems.some(
-    (item) => Number(item.id) === Number(product.id),
+    (item) => Number(item.product_id) === Number(product.id),
   );
-
   const imageUrl = product.image
     ? `http://localhost:3000${product.image}`
     : null;
@@ -39,6 +36,7 @@ const Card = ({ product }) => {
     );
   };
 
+  // Wishlist
   const handleWishlist = (e) => {
     e.stopPropagation();
 
@@ -49,23 +47,23 @@ const Card = ({ product }) => {
     }
   };
 
-  const handleBuyNow = (e) => {
+  // BUY NOW
+  const handleBuyNow = async (e) => {
     e.stopPropagation();
 
-    dispatch(
-      addToCart({
-        product,
-        quantity: 1,
-      }),
-    );
+    try {
+      await dispatch(
+        addProductToCart({
+          product,
+          quantity: 1,
+        }),
+      ).unwrap();
 
-    if (!isWishlisted) {
-      dispatch(addToWishlist(product));
+      navigate("/cart");
+    } catch (error) {
+      console.error("BUY NOW ERROR:", error);
     }
-
-    navigate("/cart");
   };
-
   return (
     <div
       onClick={handleCardClick}
@@ -118,6 +116,7 @@ const Card = ({ product }) => {
           ₹{Number(product.price).toLocaleString("en-IN")}
         </p>
 
+        {/* BUTTONS */}
         <div className="grid grid-cols-2 gap-2 mt-3">
           <button
             type="button"
