@@ -27,7 +27,6 @@ const Cart = () => {
     dispatch(fetchCart());
   }, [dispatch]);
 
-
   const handleIncrease = (item) => {
     dispatch(
       updateProductQuantity({
@@ -51,43 +50,20 @@ const Cart = () => {
       }),
     );
   };
-
-  // ==============================
-  // REMOVE
-  // ==============================
-
   const handleRemove = (productId) => {
     dispatch(removeProductFromCart(productId));
   };
-
-  // ==============================
-  // CLEAR
-  // ==============================
-
   const handleClearCart = () => {
     dispatch(clearCartFromDatabase());
   };
-
-  // ==============================
-  // TOTALS
-  // ==============================
-
   const subtotal = cartItems.reduce(
     (total, item) => total + Number(item.price) * Number(item.quantity),
 
     0,
   );
-
   const shipping = subtotal >= 999 ? 0 : 99;
-
   const gst = subtotal * 0.1;
-
   const total = subtotal + shipping + gst;
-
-  // ==============================
-  // LOADING
-  // ==============================
-
   if (loading) {
     return (
       <section className="min-h-screen bg-[#FCFBF3] flex items-center justify-center px-6">
@@ -99,10 +75,6 @@ const Cart = () => {
       </section>
     );
   }
-
-  // ==============================
-  // EMPTY CART
-  // ==============================
 
   if (cartItems.length === 0) {
     return (
@@ -132,11 +104,6 @@ const Cart = () => {
       </section>
     );
   }
-
-  // ==============================
-  // CART PAGE
-  // ==============================
-
   return (
     <section className="min-h-screen bg-[#FCFBF3] px-6 lg:px-10 py-10">
       <div className="max-w-[1400px] mx-auto">
@@ -195,23 +162,23 @@ const Cart = () => {
                   className="bg-white rounded-2xl border border-[#eee7e0] p-5 flex flex-col sm:flex-row gap-5"
                 >
                   {/* IMAGE */}
-
-                  <div className="w-full sm:w-28 h-28 rounded-xl overflow-hidden bg-[#f7f5f2] shrink-0">
+                  <Link
+                    to={`/product-details/${item.product_id}`}
+                    className="w-full sm:w-28 h-28 rounded-xl overflow-hidden bg-[#f7f5f2] shrink-0 block"
+                  >
                     {imageUrl ? (
                       <img
                         src={imageUrl}
                         alt={item.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover hover:scale-105 transition duration-300"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">
                         No Image
                       </div>
                     )}
-                  </div>
-
+                  </Link>
                   {/* DETAILS */}
-
                   <div className="flex-1">
                     <p className="text-sm text-[#a14b0b] font-semibold">
                       {item.category_name}
