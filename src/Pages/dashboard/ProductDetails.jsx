@@ -17,7 +17,7 @@ import {
   removeFromWishlist,
 } from "../../features/wishlist/wishlistSlice";
 
-import { addToCart } from "../../features/cart/cartSlice";
+import { addProductToCart } from "../../features/cart/cartSlice";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -32,15 +32,11 @@ const ProductDetails = () => {
 
   const [quantity, setQuantity] = useState(1);
 
-  // ================= FETCH PRODUCT =================
-
   useEffect(() => {
     if (id) {
       dispatch(fetchProductById(id));
     }
   }, [id, dispatch]);
-
-  // ================= FETCH ALL PRODUCTS =================
 
   useEffect(() => {
     if (products.length === 0) {
@@ -135,7 +131,7 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     dispatch(
-      addToCart({
+      addProductToCart({
         product,
         quantity,
       }),

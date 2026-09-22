@@ -1,28 +1,80 @@
-import React from "react";
+import React, { useEffect } from "react";
+
 import { useDispatch, useSelector } from "react-redux";
-import {
-  ArrowRight,
-  Heart,
-  Minus,
-  Plus,
-  ShoppingBag,
-  Trash2,
-} from "lucide-react";
+
+import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
+
 import { Link } from "react-router-dom";
 
 import {
-  increaseQuantity,
-  decreaseQuantity,
-  removeFromCart,
+  fetchCart,
+  updateProductQuantity,
+  removeProductFromCart,
+  clearCartFromDatabase,
 } from "../../features/cart/cartSlice";
 
 const Cart = () => {
   const dispatch = useDispatch();
 
-  const cartItems = useSelector((state) => state.cart.items);
+  const {
+    items: cartItems = [],
+    loading,
+    updating,
+    error,
+  } = useSelector((state) => state.cart || {});
+
+  useEffect(() => {
+    dispatch(fetchCart());
+  }, [dispatch]);
+
+
+  const handleIncrease = (item) => {
+    dispatch(
+      updateProductQuantity({
+        productId: item.product_id,
+        quantity: Number(item.quantity) + 1,
+      }),
+    );
+  };
+
+  const handleDecrease = (item) => {
+    if (Number(item.quantity) <= 1) {
+      dispatch(removeProductFromCart(item.product_id));
+
+      return;
+    }
+
+    dispatch(
+      updateProductQuantity({
+        productId: item.product_id,
+        quantity: Number(item.quantity) - 1,
+      }),
+    );
+  };
+
+  // ==============================
+  // REMOVE
+  // ==============================
+
+  const handleRemove = (productId) => {
+    dispatch(removeProductFromCart(productId));
+  };
+
+  // ==============================
+  // CLEAR
+  // ==============================
+
+  const handleClearCart = () => {
+    dispatch(clearCartFromDatabase());
+  };
+
+  // ==============================
+  // TOTALS
+  // ==============================
 
   const subtotal = cartItems.reduce(
-    (total, item) => total + Number(item.price) * item.quantity,
+    (total, item) => total + Number(item.price) * Number(item.quantity),
+
     0,
   );
 
@@ -32,7 +84,25 @@ const Cart = () => {
 
   const total = subtotal + shipping + gst;
 
-  // ================= EMPTY CART =================
+  // ==============================
+  // LOADING
+  // ==============================
+
+  if (loading) {
+    return (
+      <section className="min-h-screen bg-[#FCFBF3] flex items-center justify-center px-6">
+        <div className="text-center">
+          <div className="w-10 h-10 border-4 border-[#e5ddd5] border-t-[#8b3905] rounded-full animate-spin mx-auto" />
+
+          <p className="mt-4 text-[#77716d]">Loading your cart...</p>
+        </div>
+      </section>
+    );
+  }
+
+  // ==============================
+  // EMPTY CART
+  // ==============================
 
   if (cartItems.length === 0) {
     return (
@@ -63,21 +133,48 @@ const Cart = () => {
     );
   }
 
-  // ================= CART =================
+  // ==============================
+  // CART PAGE
+  // ==============================
 
   return (
     <section className="min-h-screen bg-[#FCFBF3] px-6 lg:px-10 py-10">
       <div className="max-w-[1400px] mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl lg:text-4xl font-bold text-[#211f1d]">
-            Shopping Cart
-          </h1>
+        {/* HEADER */}
 
-          <p className="text-[#77716d] mt-1">
-            {cartItems.length} {cartItems.length === 1 ? "item" : "items"} in
-            your cart
-          </p>
+        <div className="mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl lg:text-4xl font-bold text-[#211f1d]">
+                Shopping Cart
+              </h1>
+
+              <p className="text-[#77716d] mt-1">
+                {cartItems.length} {cartItems.length === 1 ? "item" : "items"}{" "}
+                in your cart
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleClearCart}
+              disabled={updating}
+              className="text-sm text-red-500 hover:text-red-700 font-medium disabled:opacity-50"
+            >
+              Clear Cart
+            </button>
+          </div>
         </div>
+
+        {/* ERROR */}
+
+        {error && (
+          <div className="mb-6 bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl">
+            {error}
+          </div>
+        )}
+
+        {/* CONTENT */}
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-7">
           {/* CART ITEMS */}
@@ -88,12 +185,17 @@ const Cart = () => {
                 ? `http://localhost:3000${item.image}`
                 : null;
 
+              const quantity = Number(item.quantity);
+
+              const stock = Number(item.stock_quantity);
+
               return (
                 <div
-                  key={item.id}
+                  key={item.product_id}
                   className="bg-white rounded-2xl border border-[#eee7e0] p-5 flex flex-col sm:flex-row gap-5"
                 >
                   {/* IMAGE */}
+
                   <div className="w-full sm:w-28 h-28 rounded-xl overflow-hidden bg-[#f7f5f2] shrink-0">
                     {imageUrl ? (
                       <img
@@ -127,38 +229,45 @@ const Cart = () => {
 
                     <div className="flex items-center mt-4 border border-[#e5ddd5] rounded-xl w-fit overflow-hidden">
                       <button
-                        onClick={() => dispatch(decreaseQuantity(item.id))}
-                        className="w-10 h-9 flex items-center justify-center hover:bg-[#f8f1eb]"
+                        type="button"
+                        onClick={() => handleDecrease(item)}
+                        disabled={updating}
+                        className="w-10 h-9 flex items-center justify-center hover:bg-[#f8f1eb] disabled:opacity-50"
                       >
                         <Minus size={16} />
                       </button>
 
                       <span className="w-10 text-center font-semibold">
-                        {item.quantity}
+                        {quantity}
                       </span>
 
                       <button
-                        onClick={() => dispatch(increaseQuantity(item.id))}
-                        className="w-10 h-9 flex items-center justify-center hover:bg-[#f8f1eb]"
+                        type="button"
+                        onClick={() => handleIncrease(item)}
+                        disabled={updating || quantity >= stock}
+                        className="w-10 h-9 flex items-center justify-center hover:bg-[#f8f1eb] disabled:opacity-50"
                       >
                         <Plus size={16} />
                       </button>
                     </div>
+
+                    <p className="text-xs text-[#aaa39e] mt-2">
+                      {stock} available
+                    </p>
                   </div>
 
-                  {/* ACTIONS */}
+                  {/* PRICE + REMOVE */}
 
                   <div className="flex sm:flex-col justify-between items-end">
                     <p className="font-bold text-lg text-[#211f1d]">
-                      ₹
-                      {(Number(item.price) * item.quantity).toLocaleString(
-                        "en-IN",
-                      )}
+                      ₹{(Number(item.price) * quantity).toLocaleString("en-IN")}
                     </p>
 
                     <button
-                      onClick={() => dispatch(removeFromCart(item.id))}
-                      className="text-[#aaa39e] hover:text-red-500 transition"
+                      type="button"
+                      onClick={() => handleRemove(item.product_id)}
+                      disabled={updating}
+                      className="text-[#aaa39e] hover:text-red-500 transition disabled:opacity-50"
                     >
                       <Trash2 size={19} />
                     </button>
@@ -166,6 +275,8 @@ const Cart = () => {
                 </div>
               );
             })}
+
+            {/* CONTINUE SHOPPING */}
 
             <Link
               to="/shop"
@@ -175,21 +286,29 @@ const Cart = () => {
             </Link>
           </div>
 
-          {/* SUMMARY */}
+          {/* ORDER SUMMARY */}
 
           <div className="bg-white border border-[#eee7e0] rounded-2xl p-6 h-fit">
             <h2 className="text-xl font-bold text-[#211f1d]">Order Summary</h2>
 
             <div className="space-y-4 mt-6 text-sm">
+              {/* SUBTOTAL */}
+
               <div className="flex justify-between">
                 <span className="text-[#77716d]">
                   Subtotal ({cartItems.length} items)
                 </span>
 
                 <span className="font-medium">
-                  ₹{subtotal.toLocaleString("en-IN")}
+                  ₹
+                  {subtotal.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </span>
               </div>
+
+              {/* SHIPPING */}
 
               <div className="flex justify-between">
                 <span className="text-[#77716d]">Shipping</span>
@@ -199,22 +318,41 @@ const Cart = () => {
                 </span>
               </div>
 
+              {/* GST */}
+
               <div className="flex justify-between">
                 <span className="text-[#77716d]">GST (10%)</span>
 
-                <span>₹{gst.toLocaleString("en-IN")}</span>
+                <span>
+                  ₹
+                  {gst.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
               </div>
+
+              {/* TOTAL */}
 
               <div className="border-t border-[#eee7e0] pt-5 flex justify-between">
                 <span className="font-bold text-lg">Total</span>
 
                 <span className="font-bold text-xl">
-                  ₹{total.toLocaleString("en-IN")}
+                  ₹
+                  {total.toLocaleString("en-IN", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </span>
               </div>
             </div>
 
-            <button className="w-full mt-6 bg-[#8b3905] text-white py-4 rounded-xl font-semibold hover:bg-[#722e04] transition flex items-center justify-center gap-2">
+            {/* CHECKOUT */}
+
+            <button
+              type="button"
+              className="w-full mt-6 bg-[#8b3905] text-white py-4 rounded-xl font-semibold hover:bg-[#722e04] transition flex items-center justify-center gap-2"
+            >
               Proceed to Checkout
               <ArrowRight size={19} />
             </button>
