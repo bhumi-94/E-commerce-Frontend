@@ -14,10 +14,16 @@ import {
 } from "lucide-react";
 import Loading from "../../Components/common/Loading";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProfile, saveProfile } from "../../features/profile/ProfileSlice";
+import {
+  saveProfile,
+  clearProfile,
+} from "../../features/profile/ProfileSlice";
+import { logoutUserThunk } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { user, loading, updating, error, successMessage } = useSelector(
     (state) => state.profile,
   );
@@ -32,11 +38,6 @@ const Profile = () => {
     date_of_birth: "",
     gender: "",
   });
-
-  useEffect(() => {
-    dispatch(fetchProfile());
-  }, [dispatch]);
-
   useEffect(() => {
     if (user) {
       setFormData({
@@ -57,6 +58,17 @@ const Profile = () => {
     }
   }, [user]);
 
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUserThunk()).unwrap();
+      dispatch(clearProfile());
+      setIsEditing(false);
+      setSelectedImage(null);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -155,12 +167,7 @@ const Profile = () => {
     }
   };
   if (loading) {
-    return (
-      <Loading />
-      // <div className="min-h-screen flex items-center justify-center bg-[#fcfbf8]">
-      //   <p className="text-[#8b3905] font-medium">Loading profile...</p>
-      // </div>
-    );
+    return <Loading />;
   }
 
   if (!user) {
@@ -243,10 +250,12 @@ const Profile = () => {
               Settings
             </button>
 
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-red-500 hover:bg-red-50">
-              <LogOut size={21} />
-              Logout
+             <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-red-500 hover:bg-[#faf8f5]"
+             onClick={handleLogout}>
+              <Settings size={21} />
+             Logout
             </button>
+          
           </nav>
         </aside>
 
@@ -410,7 +419,7 @@ const Profile = () => {
               />
             </div>
 
-            {/* DOB */}
+            {/* DOB  nd logout btn is also not working*/}
 
             <div>
               <label className="block text-sm font-medium mb-2 text-[#3e3935]">
