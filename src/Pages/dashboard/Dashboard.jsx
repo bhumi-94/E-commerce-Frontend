@@ -21,6 +21,13 @@ import { fetchCategories } from "../../features/category/categorySlice";
 import Loading from "../../Components/common/Loading";
 import { fetchProducts } from "../../features/product/productSlice";
 import Card from "../../Components/common/Card";
+import Deal from "../../Components/common/Deal";
+import CallToAction from "../../Components/common/CallToAction";
+import Newsletter from "../../Components/common/Newsletter";
+import TrendingNow from "../../Components/common/TrendingNow";
+import BestSeller from "../../Components/common/BestSeller";
+import FeedbackSection from "../../Components/common/FeedbackSection";
+import Testimonials from "../../Components/common/Testimonials";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -191,64 +198,65 @@ const Home = () => {
       {/* <div></div> */}
 
       {/* CATEGORY SECTION */}
-      <section className="max-w-[1400px] mx-auto px-6 lg:px-10 pb-20 mt-20">
-        {/* Section Header */}
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[2px] text-[#a14b0b] mb-2">
-              Explore
-            </p>
+      <section className="w-full bg-[#f7f1eb] mt-20 pb-20">
+        <div className="max-w-[1400px] mx-auto px-6 lg:px-10 pt-16">
+          {/* Section Header */}
+          <div className="flex items-end justify-between mb-8">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[2px] text-[#a14b0b] mb-2">
+                Explore
+              </p>
 
-            <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#211f1d]">
-              Shop by Category
-            </h2>
+              <h2 className="font-serif text-4xl lg:text-5xl font-bold text-[#211f1d]">
+                Shop by Category
+              </h2>
 
-            <p className="mt-2 text-[#8d8580] text-base lg:text-lg">
-              Explore our wide range of categories
-            </p>
+              <p className="mt-2 text-[#8d8580] text-base lg:text-lg">
+                Explore our wide range of categories
+              </p>
+            </div>
+
+            <Link
+              to="/shop"
+              className="hidden sm:flex items-center gap-2 text-[#8b3905] font-semibold hover:gap-3 transition-all duration-300"
+            >
+              View All
+              <ArrowRight size={19} />
+            </Link>
           </div>
 
-          <Link
-            to="/shop"
-            className="hidden sm:flex items-center gap-2 text-[#8b3905] font-semibold hover:gap-3 transition-all duration-300"
-          >
-            View All
-            <ArrowRight size={19} />
-          </Link>
-        </div>
+          {/* Loading */}
+          {loading && (
+            <div className="flex justify-center py-10">
+              <Loading />
+            </div>
+          )}
 
-        {/* Loading */}
-        {loading && (
-          <div className="flex justify-center py-10">
-            <Loading />
-          </div>
-        )}
+          {/* Error */}
+          {error && !loading && (
+            <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-600">
+              {error}
+            </div>
+          )}
 
-        {/* Error */}
-        {error && !loading && (
-          <div className="rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-600">
-            {error}
-          </div>
-        )}
+          {/* Category Cards */}
+          {!loading && !error && categories.length > 0 && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
+              {categories.map((category) => {
+                const Icon = getCategoryIcon(category.name);
 
-        {/* Category Cards */}
-        {!loading && !error && categories.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-4">
-            {categories.map((category) => {
-              const Icon = getCategoryIcon(category.name);
+                const imageUrl = category.image
+                  ? `http://localhost:3000${category.image}`
+                  : null;
 
-              const imageUrl = category.image
-                ? `http://localhost:3000${category.image}`
-                : null;
-
-              return (
-                <Link
-                  key={category.id}
-                  to={`/shop?category=${category.id}`}
-                  className="group"
-                >
-                  <div
-                    className="
+                return (
+                  <Link
+                    key={category.id}
+                    to={`/shop?category=${category.id}`}
+                    className="group"
+                  >
+                    <div
+                      className="
                 relative
                 h-[190px]
                 rounded-[22px]
@@ -261,14 +269,14 @@ const Home = () => {
                 hover:shadow-[0_15px_35px_rgba(70,45,30,0.12)]
                 hover:border-[#e8c99e]
               "
-                  >
-                    {/* Image / Icon Area */}
-                    <div className="relative h-[125px] overflow-hidden bg-[#f5eee7]">
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt={category.name}
-                          className="
+                    >
+                      {/* Image / Icon Area */}
+                      <div className="relative h-[125px] overflow-hidden bg-[#f5eee7]">
+                        {imageUrl ? (
+                          <img
+                            src={imageUrl}
+                            alt={category.name}
+                            className="
                       w-full
                       h-full
                       object-cover
@@ -276,10 +284,10 @@ const Home = () => {
                       duration-500
                       group-hover:scale-110
                     "
-                        />
-                      ) : (
-                        <div
-                          className="
+                          />
+                        ) : (
+                          <div
+                            className="
                     w-full
                     h-full
                     flex
@@ -289,9 +297,9 @@ const Home = () => {
                     from-[#fff8ef]
                     to-[#f2e3d4]
                   "
-                        >
-                          <div
-                            className="
+                          >
+                            <div
+                              className="
                       w-16
                       h-16
                       rounded-2xl
@@ -305,15 +313,15 @@ const Home = () => {
                       duration-300
                       group-hover:scale-110
                     "
-                          >
-                            <Icon size={30} strokeWidth={1.7} />
+                            >
+                              <Icon size={30} strokeWidth={1.7} />
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Soft overlay */}
-                      <div
-                        className="
+                        {/* Soft overlay */}
+                        <div
+                          className="
                   absolute
                   inset-0
                   bg-gradient-to-t
@@ -324,13 +332,13 @@ const Home = () => {
                   transition-opacity
                   duration-300
                 "
-                      />
-                    </div>
+                        />
+                      </div>
 
-                    {/* Category Name */}
-                    <div className="px-3 py-4 text-center">
-                      <h3
-                        className="
+                      {/* Category Name */}
+                      <div className="px-3 py-4 text-center">
+                        <h3
+                          className="
                   text-sm
                   lg:text-[15px]
                   font-semibold
@@ -340,12 +348,12 @@ const Home = () => {
                   transition-colors
                   duration-300
                 "
-                      >
-                        {category.name}
-                      </h3>
+                        >
+                          {category.name}
+                        </h3>
 
-                      <div
-                        className="
+                        <div
+                          className="
                   flex
                   items-center
                   justify-center
@@ -354,29 +362,29 @@ const Home = () => {
                   text-xs
                   text-[#a49b94]
                 "
-                      >
-                        <span>Explore</span>
-                        <ArrowRight
-                          size={12}
-                          className="
+                        >
+                          <span>Explore</span>
+                          <ArrowRight
+                            size={12}
+                            className="
                       transition-transform
                       duration-300
                       group-hover:translate-x-1
                     "
-                        />
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        )}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
-        {/* No categories */}
-        {!loading && !error && categories.length === 0 && (
-          <div
-            className="
+          {/* No categories */}
+          {!loading && !error && categories.length === 0 && (
+            <div
+              className="
       text-center
       py-12
       rounded-2xl
@@ -385,12 +393,24 @@ const Home = () => {
       border-[#ddd3ca]
       text-[#8d8580]
     "
-          >
-            No categories available.
-          </div>
-        )}
+            >
+              No categories available.
+            </div>
+          )}
+        </div>
       </section>
-    </section>
+
+      {/*--------------------- Deal, trendingNow , Call to action, best seller , newsletter  ---------------------------- */}
+      <div className="">
+        <Deal />
+        <TrendingNow />
+        <CallToAction />
+        <BestSeller />
+        <Testimonials />
+        <Newsletter />
+        <FeedbackSection />
+      </div>
+</section>
   );
 };
 

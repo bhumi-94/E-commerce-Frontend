@@ -85,17 +85,14 @@ const Profile = () => {
       return;
     }
 
-    // Allowed image types
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
     if (!allowedTypes.includes(file.type)) {
       alert("Please select a JPG, JPEG, PNG or WEBP image.");
-
       e.target.value = "";
       return;
     }
 
-    // Maximum 5 MB
     if (file.size > 5 * 1024 * 1024) {
       alert("Profile image must be less than 5 MB.");
 
@@ -103,10 +100,8 @@ const Profile = () => {
       return;
     }
 
-    // Store actual file
     setSelectedImage(file);
 
-    // Create preview
     const imageUrl = URL.createObjectURL(file);
 
     setPreviewImage(imageUrl);
@@ -215,37 +210,39 @@ const Profile = () => {
           {/* Navigation */}
 
           <nav className="p-3 space-y-1">
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl bg-[#fff9e9] text-[#8b3905]">
+            <button onClick={()=>{navigate("/profile")}} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl bg-[#fff9e9] text-[#8b3905]">
               <User size={21} />
               Profile
             </button>
 
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+            <button onClick={()=>{navigate("/orders")}} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+              
               <Package size={21} />
               My Orders
             </button>
 
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+            <button onClick={()=>{navigate("/wishlist")}} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
               <Heart size={21} />
               Wishlist
             </button>
 
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+            <button onClick={()=>{navigate("/addresses")}} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
               <MapPin size={21} />
               Addresses
             </button>
 
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+            <button onClick={()=>{navigate("/payment-methods")}} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
               <CreditCard size={21} />
               Payment Methods
             </button>
 
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+            <button onClick={()=>{navigate("/notifications")}} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+              
               <Bell size={21} />
               Notifications
             </button>
 
-            <button className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
+            <button onClick={()=>{navigate("/settings")}} className="w-full flex items-center gap-4 px-5 py-4 rounded-xl text-[#4c4845] hover:bg-[#faf8f5]">
               <Settings size={21} />
               Settings
             </button>

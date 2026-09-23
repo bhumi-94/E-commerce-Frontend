@@ -199,7 +199,7 @@ const Header = () => {
             {/* NOTIFICATION */}
             <button
               type="button"
-              onClick={() => navigate("/notification")}
+              onClick={() => navigate("/notifications")}
               className="
                 flex
                 h-10 w-10
