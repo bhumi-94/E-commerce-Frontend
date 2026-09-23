@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Notification = () => {
+const Notifications = () => {
   return (
     <div>
       notification
@@ -8,4 +8,4 @@ const Notification = () => {
   )
 }
 
-export default Notification
+export default Notifications

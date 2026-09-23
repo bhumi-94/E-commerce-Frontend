@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-
 import { Route, Routes, Navigate } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
 
 import Login from "../Pages/auth/Login";
@@ -16,8 +14,12 @@ import Deals from "../Pages/dashboard/Deals";
 import Wishlist from "../Pages/dashboard/Wishlist";
 import Cart from "../Pages/dashboard/Cart";
 import Profile from "../Pages/dashboard/Profile";
-import Notification from "../Pages/dashboard/Notification";
+import Notifications from "../Pages/dashboard/Notifications";
 import ProductDetails from "../Pages/dashboard/ProductDetails";
+import MyOrders from "../Pages/dashboard/MyOrders";
+import Addresses from "../Pages/dashboard/Addresses";
+import Settings from "../Pages/dashboard/Settings";
+import PaymentMethods from "../Pages/dashboard/PaymentMethods";
 
 import MainLayout from "../layouts/MainLayout";
 
@@ -129,22 +131,18 @@ const AppRoutes = () => {
         }
       >
         <Route path="/dashboard" element={<Dashboard />} />
-
         <Route path="/shop" element={<Shop />} />
-
         <Route path="/electronics" element={<Electronics />} />
-
         <Route path="/deals" element={<Deals />} />
-
         <Route path="/wishlist" element={<Wishlist />} />
-
         <Route path="/cart" element={<Cart />} />
-
-        <Route path="/notification" element={<Notification />} />
-
+        <Route path="/notifications" element={<Notifications />} />
         <Route path="/profile" element={<Profile />} />
-
         <Route path="/product-details/:id" element={<ProductDetails />} />
+        <Route path="/orders" element={<MyOrders />} />
+        <Route path="/addresses" element={<Addresses />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/payment-methods" element={<PaymentMethods/>} />
       </Route>
 
       <Route path="*" element={<ErrorPage />} />
