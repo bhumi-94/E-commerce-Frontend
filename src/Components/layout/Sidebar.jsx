@@ -13,6 +13,19 @@ import {
 
 const Sidebar = () => {
   const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUserThunk()).unwrap();
+
+      dispatch(clearProfile());
+      setProfileOpen(false);
+      setMobileMenuOpen(false);
+
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   const menuItems = [
     {
@@ -86,7 +99,7 @@ const Sidebar = () => {
           type="button"
           onClick={handleLogout}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-[14px] text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition"
-        > 
+        >
           <LogOut size={19} strokeWidth={1.8} />
 
           <span>Logout</span>

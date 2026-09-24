@@ -1,58 +1,64 @@
 import React, { useEffect, useState } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-
 import Login from "../Pages/auth/Login";
 import Register from "../Pages/auth/Register";
 import Dashboard from "../Pages/dashboard/Dashboard";
 import ForgetPassword from "../Pages/auth/ForgotPassword";
 import ErrorPage from "../Components/layout/ErrorPage";
-import ResetPassword from "../Pages/auth/ResetPassword";
+import ResetPassword from "../Pages/auth/ResetPassword"
 import Shop from "../Pages/dashboard/Shop";
 import Electronics from "../Pages/dashboard/Electronics";
 import Deals from "../Pages/dashboard/Deals";
 import Wishlist from "../Pages/dashboard/Wishlist";
 import Cart from "../Pages/dashboard/Cart";
 import Profile from "../Pages/dashboard/Profile";
+import ProfileHome from "../Pages/dashboard/ProfileHome";
 import Notifications from "../Pages/dashboard/Notifications";
 import ProductDetails from "../Pages/dashboard/ProductDetails";
 import MyOrders from "../Pages/dashboard/MyOrders";
 import Addresses from "../Pages/dashboard/Addresses";
 import Settings from "../Pages/dashboard/Settings";
 import PaymentMethods from "../Pages/dashboard/PaymentMethods";
-
 import MainLayout from "../layouts/MainLayout";
-
 import { fetchProfile } from "../features/profile/ProfileSlice";
-
 import { fetchCart } from "../features/cart/cartSlice";
 import { fetchWishlist } from "../features/wishlist/wishlistSlice";
 
+
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.profile);
+
   if (!user) {
     return <Navigate to="/" replace />;
   }
+
   return children;
 };
-
 const PublicRoute = ({ children }) => {
   const { user } = useSelector((state) => state.profile);
+
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }
 
   return children;
 };
+
 const AppRoutes = () => {
   const dispatch = useDispatch();
+
   const { user, loading } = useSelector((state) => state.profile);
+
   const [authChecked, setAuthChecked] = useState(false);
 
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      return;
+    }
 
     dispatch(fetchCart());
+
     dispatch(fetchWishlist());
   }, [dispatch, user?.id]);
 
@@ -74,18 +80,18 @@ const AppRoutes = () => {
     return (
       <div
         className="
-        min-h-screen
-        flex
-        items-center
-        justify-center
-        bg-[#FCFBF3]
-      "
+          min-h-screen
+          flex
+          items-center
+          justify-center
+          bg-[#FCFBF3]
+        "
       >
         <div
           className="
-          text-[#8b3905]
-          font-semibold
-        "
+            text-[#8b3905]
+            font-semibold
+          "
         >
           Loading...
         </div>
@@ -122,7 +128,6 @@ const AppRoutes = () => {
       />
 
       <Route path="/reset-password/:token" element={<ResetPassword />} />
-
       <Route
         element={
           <ProtectedRoute>
@@ -137,13 +142,38 @@ const AppRoutes = () => {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/profile" element={<Profile />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
-        <Route path="/orders" element={<MyOrders />} />
-        <Route path="/addresses" element={<Addresses />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/payment-methods" element={<PaymentMethods/>} />
+        <Route path="/profile" element={<Profile />}>
+          {/* /profile */}
+
+          <Route index element={<ProfileHome />} />
+
+          {/* /profile/orders */}
+
+          <Route path="orders" element={<MyOrders />} />
+
+          {/* /profile/wishlist */}
+
+          <Route path="wishlist" element={<Wishlist />} />
+
+          {/* /profile/addresses */}
+
+          <Route path="addresses" element={<Addresses />} />
+
+          {/* /profile/payment-methods */}
+
+          <Route path="payment-methods" element={<PaymentMethods />} />
+
+          {/* /profile/notifications */}
+
+          <Route path="notifications" element={<Notifications />} />
+
+          {/* /profile/settings */}
+
+          <Route path="settings" element={<Settings />} />
+        </Route>
       </Route>
+
 
       <Route path="*" element={<ErrorPage />} />
     </Routes>
