@@ -39,8 +39,6 @@ const Home = () => {
     error: productsError,
   } = useSelector((state) => state.product);
 
-  console.log("PRODUCTS IN HOME:", products);
-
   useEffect(() => {
     dispatch(fetchCategories());
     dispatch(fetchProducts());

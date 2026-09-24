@@ -10,7 +10,6 @@ const Testimonials = () => {
     const fetchTestimonials = async () => {
       try {
         const response = await getFeedback();
-        console.log("FEEDBACK RESPONSE:", response);
         const feedback = response?.feedback || [];
 
         const shuffled = [...feedback].sort(() => Math.random() - 0.5);
