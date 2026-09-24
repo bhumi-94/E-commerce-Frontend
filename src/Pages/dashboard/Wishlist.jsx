@@ -81,7 +81,7 @@ const Wishlist = () => {
     );
   }
   return (
-    <section className="min-h-screen bg-[#FCFBF3] px-6 lg:px-10 py-10">
+    <section className="min-h-screen bg-[#FCFBF3] px-6 lg:px-10 py-10 rounded-2xl">
       <div className="max-w-[1400px] mx-auto">
         {/* HEADER */}
 

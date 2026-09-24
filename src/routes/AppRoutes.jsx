@@ -143,33 +143,14 @@ const AppRoutes = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
+        
         <Route path="/profile" element={<Profile />}>
-          {/* /profile */}
-
           <Route index element={<ProfileHome />} />
-
-          {/* /profile/orders */}
-
           <Route path="orders" element={<MyOrders />} />
-
-          {/* /profile/wishlist */}
-
           <Route path="wishlist" element={<Wishlist />} />
-
-          {/* /profile/addresses */}
-
           <Route path="addresses" element={<Addresses />} />
-
-          {/* /profile/payment-methods */}
-
           <Route path="payment-methods" element={<PaymentMethods />} />
-
-          {/* /profile/notifications */}
-
           <Route path="notifications" element={<Notifications />} />
-
-          {/* /profile/settings */}
-
           <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
