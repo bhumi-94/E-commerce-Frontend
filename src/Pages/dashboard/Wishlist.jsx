@@ -1,17 +1,12 @@
 import React, { useEffect } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { Heart, ShoppingCart, Trash2 } from "lucide-react";
-
 import { Link } from "react-router-dom";
-
 import {
   fetchWishlist,
   removeFromWishlist,
   clearWishlist,
 } from "../../features/wishlist/wishlistSlice";
-
 import { addProductToCart } from "../../features/cart/cartSlice";
 
 const Wishlist = () => {
