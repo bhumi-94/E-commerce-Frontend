@@ -2,24 +2,12 @@ import React from "react";
 
 const Loading = () => {
   return (
-    <div className="flex justify-center items-center">
-      <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-      <circle
-        cx="12"
-        cy="12"
-        r="9"
-        className="opacity-25"
-        stroke="currentColor"
-        strokeWidth="3"
-      />
+    <div className="min-h-[500px] bg-[#FCFBF3] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-10 h-10 border-4 border-[#f0dfd4] border-t-[#8b3905] rounded-full animate-spin" />
 
-      <path
-        d="M21 12a9 9 0 0 0-9-9"
-        stroke="currentColor"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-    </svg>
+        <p className="text-sm text-gray-500">Loading your orders...</p>
+      </div>
     </div>
   );
 };
