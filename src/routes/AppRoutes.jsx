@@ -24,6 +24,8 @@ import MainLayout from "../layouts/MainLayout";
 import { fetchProfile } from "../features/profile/ProfileSlice";
 import { fetchCart } from "../features/cart/cartSlice";
 import { fetchWishlist } from "../features/wishlist/wishlistSlice";
+import Checkout from "../Pages/dashboard/Checkout";
+import OrderDetails from "../Pages/dashboard/OrderDetails";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -143,17 +145,21 @@ const AppRoutes = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
+        <Route path="checkout" element={<Checkout />} />
         
         <Route path="/profile" element={<Profile />}>
           <Route index element={<ProfileHome />} />
           <Route path="orders" element={<MyOrders />} />
+          <Route path="/profile/orders/:id" element={<OrderDetails />} />
           <Route path="wishlist" element={<Wishlist />} />
-          <Route path="addresses" element={<Addresses />} />
-          <Route path="payment-methods" element={<PaymentMethods />} />
+          <Route path="/profile/addresses" element={<Addresses />} />
+          
+          <Route path="/profile/payment-methods" element={<PaymentMethods />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
+      
 
 
       <Route path="*" element={<ErrorPage />} />

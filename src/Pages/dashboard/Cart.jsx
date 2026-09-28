@@ -1,11 +1,7 @@
 import React, { useEffect } from "react";
-
 import { useDispatch, useSelector } from "react-redux";
-
 import { ArrowRight, Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
-
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import {
   fetchCart,
   updateProductQuantity,
@@ -15,6 +11,7 @@ import {
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
     items: cartItems = [],
@@ -318,6 +315,7 @@ const Cart = () => {
 
             <button
               type="button"
+              onClick={()=>navigate("/checkout")}
               className="w-full mt-6 bg-[#8b3905] text-white py-4 rounded-xl font-semibold hover:bg-[#722e04] transition flex items-center justify-center gap-2"
             >
               Proceed to Checkout
