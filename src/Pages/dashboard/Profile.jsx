@@ -62,7 +62,7 @@ const Profile = () => {
     `;
 
   return (
-    <div className="min-h-screen bg-[#f8f8f7] px-4 sm:px-6 py-6 sm:py-10">
+    <div className="min-h-screen bg-[#fcfbf8] px-4 sm:px-6 py-6 sm:py-10">
       <div className="max-w-[1380px] mx-auto grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 lg:gap-8">
         <aside className="bg-white rounded-[24px] overflow-hidden border border-[#eeeae5] h-fit">
           {/* ================= USER ================= */}
