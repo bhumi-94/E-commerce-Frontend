@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Package,
   ShoppingBag,
@@ -15,6 +16,7 @@ import Loading from "../../Components/common/Loading";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const ORDERS_PER_PAGE = 1;
@@ -120,19 +122,14 @@ const MyOrders = () => {
   if (loading) {
     return (
       <div className="min-h-[500px] bg-[#FCFBF3] flex items-center justify-center">
-        {/* <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-[#f0dfd4] border-t-[#8b3905] rounded-full animate-spin" />
-
-          <p className="text-sm text-gray-500">Loading your orders...</p>
-        </div> */}
         <Loading />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FCFBF3] px-4 py-6 md:px-8 md:py-8">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-[#FCFBF3]  px-4 py-6 md:px-8 md:py-8 rounded-3xl">
+      <div className="max-w-6xl mx-auto ">
         {/* ================= HEADER ================= */}
         <div className="mb-7">
           <div className="flex items-center gap-3">
@@ -154,7 +151,7 @@ const MyOrders = () => {
 
         {/* ================= EMPTY STATE ================= */}
         {orders.length === 0 ? (
-          <div className="bg-white rounded-[22px] border border-[#eee7df] px-6 py-16 text-center">
+          <div className="bg-white rounded-[22px] border border-[#eee7df] px-6 py-16 text-center " >
             <div className="w-20 h-20 mx-auto rounded-full bg-[#f8eee8] flex items-center justify-center mb-5">
               <ShoppingBag size={34} className="text-[#8b3905]" />
             </div>
@@ -235,6 +232,7 @@ const MyOrders = () => {
                   <div
                     key={order.id}
                     className="bg-white rounded-[22px] border border-[#eee7df] overflow-hidden"
+                    onClick={() => navigate(`/profile/orders/${order.id}`)}
                   >
                     {/* -------- Order Top -------- */}
                     <div className="px-5 py-5 md:px-6 border-b border-[#eee7df]">

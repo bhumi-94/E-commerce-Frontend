@@ -6,7 +6,7 @@ import Register from "../Pages/auth/Register";
 import Dashboard from "../Pages/dashboard/Dashboard";
 import ForgetPassword from "../Pages/auth/ForgotPassword";
 import ErrorPage from "../Components/layout/ErrorPage";
-import ResetPassword from "../Pages/auth/ResetPassword"
+import ResetPassword from "../Pages/auth/ResetPassword";
 import Shop from "../Pages/dashboard/Shop";
 import Electronics from "../Pages/dashboard/Electronics";
 import Deals from "../Pages/dashboard/Deals";
@@ -27,40 +27,30 @@ import { fetchWishlist } from "../features/wishlist/wishlistSlice";
 import Checkout from "../Pages/dashboard/Checkout";
 import OrderDetails from "../Pages/dashboard/OrderDetails";
 
-
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.profile);
-
   if (!user) {
     return <Navigate to="/" replace />;
   }
-
   return children;
 };
 const PublicRoute = ({ children }) => {
   const { user } = useSelector((state) => state.profile);
-
   if (user) {
     return <Navigate to="/dashboard" replace />;
   }
-
   return children;
 };
 
 const AppRoutes = () => {
   const dispatch = useDispatch();
-
   const { user, loading } = useSelector((state) => state.profile);
-
   const [authChecked, setAuthChecked] = useState(false);
-
   useEffect(() => {
     if (!user?.id) {
       return;
     }
-
     dispatch(fetchCart());
-
     dispatch(fetchWishlist());
   }, [dispatch, user?.id]);
 
@@ -74,7 +64,6 @@ const AppRoutes = () => {
         setAuthChecked(true);
       }
     };
-
     checkAuthentication();
   }, [dispatch]);
 
@@ -119,7 +108,6 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-
       <Route
         path="/forgot-password"
         element={
@@ -128,7 +116,6 @@ const AppRoutes = () => {
           </PublicRoute>
         }
       />
-
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route
         element={
@@ -146,21 +133,18 @@ const AppRoutes = () => {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
         <Route path="checkout" element={<Checkout />} />
-        
+
         <Route path="/profile" element={<Profile />}>
           <Route index element={<ProfileHome />} />
           <Route path="orders" element={<MyOrders />} />
-          <Route path="/profile/orders/:id" element={<OrderDetails />} />
+          <Route path="orders/:id" element={<OrderDetails />} />
           <Route path="wishlist" element={<Wishlist />} />
-          <Route path="/profile/addresses" element={<Addresses />} />
-          
-          <Route path="/profile/payment-methods" element={<PaymentMethods />} />
+          <Route path="addresses" element={<Addresses />} />
+          <Route path="payment-methods" element={<PaymentMethods />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Route>
-      
-
 
       <Route path="*" element={<ErrorPage />} />
     </Routes>

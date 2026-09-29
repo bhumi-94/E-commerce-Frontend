@@ -23,9 +23,7 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await dispatch(logoutUserThunk()).unwrap();
-
       dispatch(clearProfile());
-
       navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
