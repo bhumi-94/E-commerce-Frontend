@@ -16,6 +16,7 @@ import Banner from "./Banner";
 import Logo from "../common/Logo";
 import { clearProfile } from "../../features/profile/ProfileSlice";
 import { logoutUserThunk } from "../../features/auth/authSlice";
+import { fetchNotifications } from "../../features/Notifications/notificationSlice";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -36,7 +37,40 @@ const Header = () => {
 
   const wishlistCount = wishlistItems.length;
 
-  // CLOSE PROFILE WHEN CLICKING OUTSIDE
+  const unreadCount = useSelector(
+    (state) => state.notification?.unreadCount || 0,
+  );
+
+  // useEffect(() => {
+  //   dispatch(fetchNotifications());
+  // }, [dispatch]);
+  // useEffect(() => {
+  //   const handleClickOutside = (event) => {
+  //     if (profileRef.current && !profileRef.current.contains(event.target)) {
+  //       setProfileOpen(false);
+  //     }
+  //   };
+
+  //   document.addEventListener("mousedown", handleClickOutside);
+
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    dispatch(fetchNotifications());
+
+    const interval = setInterval(() => {
+      dispatch(fetchNotifications());
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [dispatch, isAuthenticated]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -51,17 +85,14 @@ const Header = () => {
     };
   }, []);
 
-  // USER NAME
   const userName = user
     ? `${user.first_name || ""} ${user.last_name || ""}`.trim()
     : "User";
-
-  // PROFILE IMAGE
+  
   const profileImage = user?.profile_image
     ? `http://localhost:3000/${user.profile_image.replace(/^\/+/, "")}`
     : null;
 
-  // LOGOUT
   const handleLogout = async () => {
     try {
       await dispatch(logoutUserThunk()).unwrap();
@@ -76,7 +107,6 @@ const Header = () => {
     }
   };
 
-  // MOBILE NAVIGATION
   const handleMobileNavigation = (path) => {
     setMobileMenuOpen(false);
     navigate(path);
@@ -84,13 +114,10 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      {/* SHIPPING BANNER */}
       <Banner />
 
-      {/* ================= DESKTOP / MAIN NAVBAR ================= */}
       <nav className="h-[68px] bg-white border-b border-[#eee9e5]">
         <div className="max-w-[1400px] h-full mx-auto px-3 sm:px-6 lg:px-10 flex items-center gap-2">
-          {/* MOBILE MENU BUTTON */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
@@ -104,12 +131,10 @@ const Header = () => {
             )}
           </button>
 
-          {/* LOGO */}
           <div className="shrink-0">
             <Logo />
           </div>
 
-          {/* DESKTOP NAVIGATION */}
           <div className="hidden md:flex items-center gap-1 lg:gap-2 ml-4 lg:ml-8">
             <NavLink
               to="/dashboard"
@@ -164,7 +189,6 @@ const Header = () => {
             </NavLink>
           </div>
 
-          {/* DESKTOP SEARCH */}
           <div className="hidden lg:flex flex-1 max-w-[570px] mx-4 xl:mx-8">
             <div className="relative w-full">
               <Search
@@ -192,9 +216,7 @@ const Header = () => {
             </div>
           </div>
 
-          {/* ================= RIGHT SIDE ================= */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            {/* WISHLIST */}
             <button
               type="button"
               onClick={() => navigate("/wishlist")}
@@ -219,7 +241,6 @@ const Header = () => {
               )}
             </button>
 
-            {/* CART */}
             <button
               type="button"
               onClick={() => navigate("/cart")}
@@ -244,28 +265,50 @@ const Header = () => {
               )}
             </button>
 
-            {/* NOTIFICATION */}
-            <button
+<button
               type="button"
               onClick={() => navigate("/notifications")}
               className="
-                flex
-                h-9 w-9
-                sm:h-10 sm:w-10
-                items-center
-                justify-center
-                rounded-full
-                hover:bg-gray-100
-                transition
-              "
+    relative
+    flex
+    h-9 w-9
+    sm:h-10 sm:w-10
+    items-center
+    justify-center
+    rounded-full
+    hover:bg-gray-100
+    transition
+  "
+              aria-label="Notifications"
             >
               <Bell size={20} className="text-gray-700" />
+
+              {unreadCount > 0 && (
+                <span
+                  className="
+        absolute
+        -top-1
+        -right-1
+        min-w-[17px]
+        h-[17px]
+        px-1
+        bg-red-500
+        text-white
+        text-[9px]
+        font-bold
+        rounded-full
+        flex
+        items-center
+        justify-center
+        leading-none
+      "
+                >
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
             </button>
 
-            {/* ================= AUTH / PROFILE ================= */}
-
             {!isAuthenticated ? (
-              /* LOGIN */
               <button
                 type="button"
                 onClick={() => navigate("/")}
@@ -292,7 +335,7 @@ const Header = () => {
                 <span className="hidden sm:inline">Login</span>
               </button>
             ) : (
-              /* PROFILE */
+
               <div ref={profileRef} className="relative">
                 <button
                   type="button"
@@ -312,7 +355,6 @@ const Header = () => {
                     transition
                   "
                 >
-                  {/* PROFILE IMAGE */}
                   <div
                     className="
                       w-8
@@ -339,8 +381,6 @@ const Header = () => {
                       userName.charAt(0).toUpperCase()
                     )}
                   </div>
-
-                  {/* PROFILE TEXT */}
                   <span
                     className="
                       hidden
@@ -364,7 +404,6 @@ const Header = () => {
                   />
                 </button>
 
-                {/* PROFILE DROPDOWN */}
                 {profileOpen && (
                   <div
                     className="
@@ -383,7 +422,6 @@ const Header = () => {
                       z-50
                     "
                   >
-                    {/* USER INFORMATION */}
                     <div
                       className="
                         px-5
@@ -394,7 +432,6 @@ const Header = () => {
                         text-center
                       "
                     >
-                      {/* LARGE PROFILE IMAGE */}
                       <div
                         className="
                           w-[72px]
@@ -422,7 +459,6 @@ const Header = () => {
                         )}
                       </div>
 
-                      {/* USER NAME */}
                       <h3
                         className="
                           text-[17px]
@@ -432,8 +468,6 @@ const Header = () => {
                       >
                         {userName}
                       </h3>
-
-                      {/* USER EMAIL */}
                       <p
                         className="
                           mt-1
@@ -449,7 +483,6 @@ const Header = () => {
 
                     <div className="border-t border-[#eee9e5]" />
 
-                    {/* MY PROFILE */}
                     <button
                       type="button"
                       onClick={() => {
@@ -476,8 +509,6 @@ const Header = () => {
                     </button>
 
                     <div className="border-t border-[#eee9e5]" />
-
-                    {/* LOGOUT */}
                     <button
                       type="button"
                       onClick={handleLogout}
