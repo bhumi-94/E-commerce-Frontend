@@ -196,7 +196,7 @@ const Addresses = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FCFBF3] px-4 sm:px-6 lg:px-10 py-6">
+    <div className="min-h-screen bg-[#FCFBF3] px-4 sm:px-6 lg:px-10 py-6 rounded-3xl">
       <div className="max-w-[1200px] mx-auto">
         {/* HEADER */}
 

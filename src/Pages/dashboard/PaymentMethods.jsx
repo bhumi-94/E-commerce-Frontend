@@ -180,7 +180,7 @@ const PaymentMethods = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FCFBF3] px-4 py-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#FCFBF3] px-4 py-6 sm:px-6 lg:px-8 rounded-3xl">
       <div className="mx-auto max-w-6xl">
         {/* ================= HEADER ================= */}
         <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

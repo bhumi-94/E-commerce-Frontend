@@ -76,7 +76,7 @@ const Wishlist = () => {
     );
   }
   return (
-    <section className="min-h-screen bg-[#FCFBF3] px-6 lg:px-10 py-10 rounded-2xl">
+    <section className="min-h-screen bg-[#FCFBF3] px-6 lg:px-10 py-10 rounded-3xl">
       <div className="max-w-[1400px] mx-auto">
         {/* HEADER */}
 
@@ -114,10 +114,6 @@ const Wishlist = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {wishlistItems.map((product) => {
-            // IMPORTANT:
-            // `id` = wishlist row ID
-            // `product_id` = actual product ID
-
             const productId = product.product_id;
 
             const imageUrl = product.image
