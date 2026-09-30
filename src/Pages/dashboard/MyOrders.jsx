@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Package,
@@ -7,20 +7,22 @@ import {
   CheckCircle2,
   Truck,
   XCircle,
-  ChevronLeft,
-  ChevronRight,
   CalendarDays,
 } from "lucide-react";
+
 import { getOrders } from "../../features/orders/order.api";
 import Loading from "../../Components/common/Loading";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const ORDERS_PER_PAGE = 1;
+  const [showAllOrders, setShowAllOrders] = useState(false);
 
+  const navigate = useNavigate();
+
+  const RECENT_ORDERS_LIMIT = 3;
+
+  // ================= LOAD ORDERS =================
   const loadOrders = async () => {
     try {
       setLoading(true);
@@ -43,9 +45,12 @@ const MyOrders = () => {
     loadOrders();
   }, []);
 
-  const totalPages = Math.ceil(orders.length / ORDERS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ORDERS_PER_PAGE;
-  const currentOrders = orders.slice(startIndex, startIndex + ORDERS_PER_PAGE);
+  // ================= ORDERS TO DISPLAY =================
+  const displayedOrders = showAllOrders
+    ? orders
+    : orders.slice(0, RECENT_ORDERS_LIMIT);
+
+  // ================= IMAGE URL =================
   const getImageUrl = (image) => {
     if (!image) return null;
 
@@ -58,6 +63,7 @@ const MyOrders = () => {
     return `http://localhost:3000/uploads/${cleanImage}`;
   };
 
+  // ================= STATUS DETAILS =================
   const getStatusDetails = (status) => {
     switch (status) {
       case "Delivered":
@@ -98,6 +104,7 @@ const MyOrders = () => {
     }
   };
 
+  // ================= DATE FORMAT =================
   const formatDate = (date) => {
     if (!date) return "";
 
@@ -108,17 +115,7 @@ const MyOrders = () => {
     });
   };
 
-  const handlePageChange = (page) => {
-    if (page < 1 || page > totalPages) return;
-
-    setCurrentPage(page);
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
+  // ================= LOADING =================
   if (loading) {
     return (
       <div className="min-h-[500px] bg-[#FCFBF3] flex items-center justify-center">
@@ -128,8 +125,8 @@ const MyOrders = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FCFBF3]  px-4 py-6 md:px-8 md:py-8 rounded-3xl">
-      <div className="max-w-6xl mx-auto ">
+    <div className="min-h-screen bg-[#FCFBF3] px-4 py-6 md:px-8 md:py-8 rounded-3xl">
+      <div className="max-w-6xl mx-auto">
         {/* ================= HEADER ================= */}
         <div className="mb-7">
           <div className="flex items-center gap-3">
@@ -151,7 +148,7 @@ const MyOrders = () => {
 
         {/* ================= EMPTY STATE ================= */}
         {orders.length === 0 ? (
-          <div className="bg-white rounded-[22px] border border-[#eee7df] px-6 py-16 text-center " >
+          <div className="bg-white rounded-[22px] border border-[#eee7df] px-6 py-16 text-center">
             <div className="w-20 h-20 mx-auto rounded-full bg-[#f8eee8] flex items-center justify-center mb-5">
               <ShoppingBag size={34} className="text-[#8b3905]" />
             </div>
@@ -171,70 +168,20 @@ const MyOrders = () => {
               <p className="text-sm text-gray-500">
                 {orders.length} {orders.length === 1 ? "order" : "orders"}
               </p>
-
-              {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 mt-8">
-                  {/* Previous */}
-                  <button
-                    type="button"
-                    disabled={currentPage === 1}
-                    onClick={() => setCurrentPage((prev) => prev - 1)}
-                    className="w-10 h-10 rounded-xl bg-white border border-[#e6ddd5] flex items-center justify-center text-gray-600 hover:border-[#8b3905] hover:text-[#8b3905] disabled:opacity-40 disabled:cursor-not-allowed transition"
-                  >
-                    <ChevronLeft size={18} />
-                  </button>
-
-                  {/* Page Numbers */}
-                  {Array.from(
-                    { length: totalPages },
-                    (_, index) => index + 1,
-                  ).map((page) => (
-                    <button
-                      key={page}
-                      type="button"
-                      onClick={() => {
-                        setCurrentPage(page);
-
-                        window.scrollTo({
-                          top: 0,
-                          behavior: "smooth",
-                        });
-                      }}
-                      className={`w-10 h-10 rounded-xl text-sm font-medium transition ${
-                        currentPage === page
-                          ? "bg-[#8b3905] text-white"
-                          : "bg-white text-gray-600 border border-[#e6ddd5] hover:border-[#8b3905] hover:text-[#8b3905]"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-
-                  {/* Next */}
-                  <button
-                    type="button"
-                    disabled={currentPage === totalPages}
-                    onClick={() => setCurrentPage((prev) => prev + 1)}
-                    className="w-10 h-10 rounded-xl bg-white border border-[#e6ddd5] flex items-center justify-center text-gray-600 hover:border-[#8b3905] hover:text-[#8b3905] disabled:opacity-40 disabled:cursor-not-allowed transition"
-                  >
-                    <ChevronRight size={18} />
-                  </button>
-                </div>
-              )}
             </div>
 
             {/* ================= ORDERS ================= */}
             <div className="space-y-5">
-              {currentOrders.map((order) => {
+              {displayedOrders.map((order) => {
                 const status = getStatusDetails(order.order_status);
 
                 return (
                   <div
                     key={order.id}
-                    className="bg-white rounded-[22px] border border-[#eee7df] overflow-hidden"
+                    className="bg-white rounded-[22px] border border-[#eee7df] overflow-hidden cursor-pointer hover:shadow-sm transition"
                     onClick={() => navigate(`/profile/orders/${order.id}`)}
                   >
-                    {/* -------- Order Top -------- */}
+                    {/* -------- ORDER TOP -------- */}
                     <div className="px-5 py-5 md:px-6 border-b border-[#eee7df]">
                       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div className="flex items-center gap-3">
@@ -253,7 +200,6 @@ const MyOrders = () => {
 
                         <div className="flex items-center gap-2 text-sm text-gray-500">
                           <CalendarDays size={16} />
-
                           {formatDate(order.created_at)}
                         </div>
 
@@ -261,13 +207,12 @@ const MyOrders = () => {
                           className={`inline-flex items-center gap-1.5 w-fit px-3 py-1.5 rounded-full border text-xs font-medium ${status.className}`}
                         >
                           {status.icon}
-
                           {order.order_status}
                         </div>
                       </div>
                     </div>
 
-                    {/* -------- Products -------- */}
+                    {/* -------- PRODUCTS -------- */}
                     <div className="px-5 py-5 md:px-6">
                       <div className="space-y-4">
                         {order.items?.map((item) => {
@@ -324,7 +269,7 @@ const MyOrders = () => {
                       </div>
                     </div>
 
-                    {/* -------- Order Bottom -------- */}
+                    {/* -------- ORDER BOTTOM -------- */}
                     <div className="bg-[#FCFBF8] border-t border-[#eee7df] px-5 py-5 md:px-6">
                       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                         {/* Payment */}
@@ -383,43 +328,35 @@ const MyOrders = () => {
               })}
             </div>
 
-            {/* ================= PAGINATION ================= */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-8">
+            {/* ================= SEE MORE ORDERS ================= */}
+            {!showAllOrders && orders.length > RECENT_ORDERS_LIMIT && (
+              <div className="flex justify-center mt-8">
                 <button
                   type="button"
-                  disabled={currentPage === 1}
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="w-10 h-10 rounded-xl border border-[#e6ddd5] bg-white flex items-center justify-center text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:border-[#8b3905] hover:text-[#8b3905] transition"
-                >
-                  <ChevronLeft size={18} />
-                </button>
+                  onClick={() => {
+                    setShowAllOrders(true);
 
-                {Array.from(
-                  { length: totalPages },
-                  (_, index) => index + 1,
-                ).map((page) => (
-                  <button
-                    key={page}
-                    type="button"
-                    onClick={() => handlePageChange(page)}
-                    className={`w-10 h-10 rounded-xl text-sm font-medium transition ${
-                      currentPage === page
-                        ? "bg-[#8b3905] text-white"
-                        : "bg-white text-gray-600 border border-[#e6ddd5] hover:border-[#8b3905] hover:text-[#8b3905]"
-                    }`}
-                  >
-                    {page}
-                  </button>
-                ))}
-
-                <button
-                  type="button"
-                  disabled={currentPage === totalPages}
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="w-10 h-10 rounded-xl border border-[#e6ddd5] bg-white flex items-center justify-center text-gray-600 disabled:opacity-40 disabled:cursor-not-allowed hover:border-[#8b3905] hover:text-[#8b3905] transition"
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  }}
+                  className="
+                      px-6
+                      py-3
+                      rounded-xl
+                      border
+                      border-[#8b3905]
+                      bg-white
+                      text-[#8b3905]
+                      text-sm
+                      font-semibold
+                      hover:bg-[#8b3905]
+                      hover:text-white
+                      transition
+                    "
                 >
-                  <ChevronRight size={18} />
+                  See More Orders
                 </button>
               </div>
             )}
