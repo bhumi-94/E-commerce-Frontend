@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUserThunk } from "../../features/auth/authSlice";
 import { fetchProfile } from "../../features/profile/ProfileSlice";
+import api from "../../api/api";
 
 const MailIcon = ({ className = "" }) => (
   <svg
@@ -20,6 +21,7 @@ const MailIcon = ({ className = "" }) => (
     <path d="m3 7 9 6 9-6" />
   </svg>
 );
+
 const LockIcon = ({ className = "" }) => (
   <svg
     className={className}
@@ -36,6 +38,7 @@ const LockIcon = ({ className = "" }) => (
     <path d="M8 10V7a4 4 0 0 1 8 0v3" />
   </svg>
 );
+
 const EyeIcon = ({ className = "" }) => (
   <svg
     className={className}
@@ -52,6 +55,7 @@ const EyeIcon = ({ className = "" }) => (
     <circle cx="12" cy="12" r="3" />
   </svg>
 );
+
 const EyeOffIcon = ({ className = "" }) => (
   <svg
     className={className}
@@ -101,6 +105,15 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // ================= GOOGLE =================
+
+  const googleButtonRef = useRef(null);
+  const googleInitialized = useRef(false);
+
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  // ================= FORM =================
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -113,19 +126,25 @@ const Login = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // ================= NORMAL LOGIN =================
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
     if (error) {
       setError("");
     }
+
     if (success) {
       setSuccess("");
     }
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -147,8 +166,11 @@ const Login = () => {
           rememberMe,
         }),
       ).unwrap();
+
       setSuccess(result?.message || "Login successful!");
+
       await dispatch(fetchProfile()).unwrap();
+
       navigate("/dashboard", { replace: true });
     } catch (error) {
       console.error("Login error:", error);
@@ -164,6 +186,117 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  // ================= GOOGLE LOGIN =================
+
+  const handleGoogleLogin = async (credential) => {
+    try {
+      setError("");
+      setSuccess("");
+      setGoogleLoading(true);
+
+      const response = await api.post(
+        "/auth/google",
+        {
+          credential,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      if (!response.data?.success) {
+        throw new Error(response.data?.message || "Google login failed.");
+      }
+
+      setSuccess(response.data?.message || "Google login successful!");
+
+      // Fetch the logged-in Nexora user
+      await dispatch(fetchProfile()).unwrap();
+
+      // Go to dashboard
+      navigate("/dashboard", { replace: true });
+    } catch (error) {
+      console.error("Google login error:", error);
+
+      setError(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Google login failed. Please try again.",
+      );
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
+
+  // ================= GOOGLE INITIALIZATION =================
+
+  useEffect(() => {
+    let intervalId;
+
+    const initializeGoogle = () => {
+      if (
+        googleInitialized.current ||
+        !window.google ||
+        !googleButtonRef.current
+      ) {
+        return;
+      }
+
+      const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+      if (!clientId) {
+        console.error("VITE_GOOGLE_CLIENT_ID is missing from frontend .env");
+
+        setError("Google login is not configured.");
+
+        return;
+      }
+
+      googleInitialized.current = true;
+
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+
+        callback: (response) => {
+          if (!response?.credential) {
+            setError("Google authentication failed.");
+            return;
+          }
+
+          handleGoogleLogin(response.credential);
+        },
+      });
+
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "rectangular",
+        width: 420,
+      });
+    };
+
+    initializeGoogle();
+
+    if (!googleInitialized.current) {
+      intervalId = setInterval(() => {
+        initializeGoogle();
+
+        if (googleInitialized.current) {
+          clearInterval(intervalId);
+        }
+      }, 100);
+    }
+
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+  }, []);
+
   return (
     <div className="min-h-screen w-full bg-[#fcfbf8] px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
@@ -182,6 +315,8 @@ const Login = () => {
             md:py-10
           "
         >
+          {/* ================= LOGO ================= */}
+
           <div className="mb-7 flex items-center justify-center gap-3">
             <div
               className="
@@ -213,6 +348,8 @@ const Login = () => {
               Nexora
             </h1>
           </div>
+
+          {/* ================= HEADING ================= */}
 
           <div className="mb-7 text-center">
             <h2
@@ -513,29 +650,26 @@ const Login = () => {
 
           {/* ================= GOOGLE ================= */}
 
-          <button
-            type="button"
+          <div
+            ref={googleButtonRef}
             className="
               flex
-              h-12
+              min-h-12
               w-full
               items-center
               justify-center
-              gap-3
+              overflow-hidden
               rounded-[14px]
-              border
-              border-[#e5e1de]
-              bg-white
-              text-sm
-              font-medium
-              text-[#222]
-              transition
-              hover:bg-[#faf9f7]
             "
-          >
-            <GoogleIcon />
-            Continue with Google
-          </button>
+          />
+
+          {/* Google loading indicator */}
+
+          {googleLoading && (
+            <p className="mt-3 text-center text-sm text-[#a19a96]">
+              Signing in with Google...
+            </p>
+          )}
 
           {/* ================= REGISTER ================= */}
 
