@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import {
   Bell,
+  ArchiveRestore,
   Heart,
   ShoppingCart,
   User,
@@ -10,6 +11,8 @@ import {
   Menu,
   X,
   Search,
+  Users,
+  Package,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import Banner from "./Banner";
@@ -21,42 +24,18 @@ import { fetchNotifications } from "../../features/Notifications/notificationSli
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const profileRef = useRef(null);
-
   const { user } = useSelector((state) => state.profile);
   const isAuthenticated = !!user;
-
   const cartItems = useSelector((state) => state.cart?.items || []);
   const wishlistItems = useSelector((state) => state.wishlist?.items || []);
-
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-
   const wishlistCount = wishlistItems.length;
-
   const unreadCount = useSelector(
     (state) => state.notification?.unreadCount || 0,
   );
-
-  // useEffect(() => {
-  //   dispatch(fetchNotifications());
-  // }, [dispatch]);
-  // useEffect(() => {
-  //   const handleClickOutside = (event) => {
-  //     if (profileRef.current && !profileRef.current.contains(event.target)) {
-  //       setProfileOpen(false);
-  //     }
-  //   };
-
-  //   document.addEventListener("mousedown", handleClickOutside);
-
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, []);
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -88,7 +67,7 @@ const Header = () => {
   const userName = user
     ? `${user.first_name || ""} ${user.last_name || ""}`.trim()
     : "User";
-  
+
   const profileImage = user?.profile_image
     ? `http://localhost:3000/${user.profile_image.replace(/^\/+/, "")}`
     : null;
@@ -265,20 +244,20 @@ const Header = () => {
               )}
             </button>
 
-<button
+            <button
               type="button"
               onClick={() => navigate("/notifications")}
               className="
-    relative
-    flex
-    h-9 w-9
-    sm:h-10 sm:w-10
-    items-center
-    justify-center
-    rounded-full
-    hover:bg-gray-100
-    transition
-  "
+                relative
+                flex
+                h-9 w-9
+                sm:h-10 sm:w-10
+                items-center
+                justify-center
+                rounded-full
+                hover:bg-gray-100
+                transition
+              "
               aria-label="Notifications"
             >
               <Bell size={20} className="text-gray-700" />
@@ -286,22 +265,22 @@ const Header = () => {
               {unreadCount > 0 && (
                 <span
                   className="
-        absolute
-        -top-1
-        -right-1
-        min-w-[17px]
-        h-[17px]
-        px-1
-        bg-red-500
-        text-white
-        text-[9px]
-        font-bold
-        rounded-full
-        flex
-        items-center
-        justify-center
-        leading-none
-      "
+                    absolute
+                    -top-1
+                    -right-1
+                    min-w-[17px]
+                    h-[17px]
+                    px-1
+                    bg-red-500
+                    text-white
+                    text-[9px]
+                    font-bold
+                    rounded-full
+                    flex
+                    items-center
+                    justify-center
+                    leading-none
+                  "
                 >
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
@@ -335,7 +314,6 @@ const Header = () => {
                 <span className="hidden sm:inline">Login</span>
               </button>
             ) : (
-
               <div ref={profileRef} className="relative">
                 <button
                   type="button"
@@ -481,34 +459,75 @@ const Header = () => {
                       </p>
                     </div>
 
-                    <div className="border-t border-[#eee9e5]" />
+                    <div>
+                      {user?.role === "admin" ? (
+                        <>
+                          {/* My Profile */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProfileOpen(false);
+                              navigate("/profile");
+                            }}
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#403c39] hover:bg-[#faf8f5]"
+                          >
+                            <User size={19} />
+                            <span>My Profile</span>
+                          </button>
 
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setProfileOpen(false);
-                        navigate("/profile");
-                      }}
-                      className="
-                        w-full
-                        flex
-                        items-center
-                        gap-3
-                        px-5
-                        py-4
-                        text-left
-                        text-[#403c39]
-                        hover:bg-[#faf8f5]
-                        hover:text-[#8b3905]
-                        transition
-                      "
-                    >
-                      <User size={19} />
+                          {/* User Details */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProfileOpen(false);
+                              navigate("/admin/users");
+                            }}
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#403c39] hover:bg-[#faf8f5]"
+                          >
+                            <Users size={19} />
+                            <span>User Details</span>
+                          </button>
 
-                      <span className="text-sm font-medium">My Profile</span>
-                    </button>
+                          {/* Manage Products */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProfileOpen(false);
+                              navigate("/admin/products");
+                            }}
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#403c39] hover:bg-[#faf8f5]"
+                          >
+                            <Package size={19} />
+                            <span>Manage Products</span>
+                          </button>
 
-                    <div className="border-t border-[#eee9e5]" />
+                          {/*Add Products*/}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setProfileOpen(false);
+                              navigate("/admin/addproducts");
+                            }}
+                            className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#403c39] hover:bg-[#faf8f5]"
+                          >
+                            <ArchiveRestore size={19} />
+                            <span>Add Products</span>
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setProfileOpen(false);
+                            navigate("/profile");
+                          }}
+                          className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-medium text-[#403c39] hover:bg-[#faf8f5]"
+                        >
+                          <User size={19} />
+                          <span>My Profile</span>
+                        </button>
+                      )}
+                    </div>
                     <button
                       type="button"
                       onClick={handleLogout}

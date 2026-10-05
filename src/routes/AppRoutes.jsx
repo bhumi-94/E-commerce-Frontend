@@ -26,6 +26,9 @@ import { fetchCart } from "../features/cart/cartSlice";
 import { fetchWishlist } from "../features/wishlist/wishlistSlice";
 import Checkout from "../Pages/dashboard/Checkout";
 import OrderDetails from "../Pages/dashboard/OrderDetails";
+import AdminUsers from "../Pages/Admin/AdminUsers";
+import AdminProduct from "../Pages/Admin/AdminProduct";
+import AdminAddProducts from "../Pages/Admin/AdminAddProducts";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.profile);
@@ -144,6 +147,10 @@ const AppRoutes = () => {
           <Route path="notifications" element={<Notifications />} />
           <Route path="settings" element={<Settings />} />
         </Route>
+        
+          <Route path="admin/users" element={<AdminUsers />} />
+          <Route path="admin/products" element={<AdminProduct />} />
+          <Route path="admin/addproducts" element={<AdminAddProducts />} />
       </Route>
 
       <Route path="*" element={<ErrorPage />} />
