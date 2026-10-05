@@ -81,7 +81,6 @@ const Notifications = () => {
 
   const handleDelete = (e, notificationId) => {
     e.stopPropagation();
-
     dispatch(removeNotification(notificationId));
   };
 
