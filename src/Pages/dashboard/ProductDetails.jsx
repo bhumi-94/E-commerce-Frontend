@@ -24,7 +24,7 @@ const ProductDetails = () => {
   const { selectedProduct, products, productLoading, productError } =
     useSelector((state) => state.product);
 
-  const wishlistItems = useSelector((state) => state.wishlist?.items || [])
+  const wishlistItems = useSelector((state) => state.wishlist?.items || []);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -45,7 +45,6 @@ const ProductDetails = () => {
     };
   }, [dispatch]);
 
-  
   if (productLoading) {
     return (
       <div className="min-h-screen bg-[#FCFBF3] flex items-center justify-center">
@@ -81,8 +80,9 @@ const ProductDetails = () => {
       Number(item.id) !== Number(product.id),
   );
   const imageUrl = product.image
-    ? `http://localhost:3000${product.image}`
+    ? `${import.meta.env.VITE_BACKEND_URL}${product.image}`
     : null;
+    
   const increaseQuantity = () => {
     if (quantity < Number(product.stock_quantity || 1)) {
       setQuantity((prev) => prev + 1);

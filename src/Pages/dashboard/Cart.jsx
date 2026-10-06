@@ -146,7 +146,7 @@ const Cart = () => {
           <div className="space-y-5">
             {cartItems.map((item) => {
               const imageUrl = item.image
-                ? `http://localhost:3000${item.image}`
+                ? `${import.meta.env.VITE_BACKEND_URL}${item.image}`
                 : null;
 
               const quantity = Number(item.quantity);
@@ -315,7 +315,7 @@ const Cart = () => {
 
             <button
               type="button"
-              onClick={()=>navigate("/checkout")}
+              onClick={() => navigate("/checkout")}
               className="w-full mt-6 bg-[#8b3905] text-white py-4 rounded-xl font-semibold hover:bg-[#722e04] transition flex items-center justify-center gap-2"
             >
               Proceed to Checkout

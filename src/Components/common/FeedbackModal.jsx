@@ -22,8 +22,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
     if (user.profile_image.startsWith("http")) {
       return user.profile_image;
     }
-
-    return `http://localhost:3000${user.profile_image}`;
+    return `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`;
   };
 
   const handleSubmit = async (e) => {

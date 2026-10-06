@@ -18,7 +18,7 @@ const Card = ({ product }) => {
     (item) => Number(item.product_id) === Number(product.id),
   );
   const imageUrl = product.image
-    ? `http://localhost:3000${product.image}`
+    ? `${import.meta.env.VITE_BACKEND_URL}${product.image}`
     : null;
 
   const handleCardClick = () => {
