@@ -13,6 +13,7 @@ import { fetchProducts } from "../../features/product/productSlice";
 import { fetchCategories } from "../../features/category/categorySlice";
 import Card from "../../Components/common/Card";
 import Loading from "../../Components/common/Loading";
+import { useSearchParams } from "react-router-dom";
 
 const Shop = () => {
   const dispatch = useDispatch();
@@ -27,7 +28,12 @@ const Shop = () => {
     (state) => state.category,
   );
 
-  const [search, setSearch] = useState("");
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("search") || "";
+
+  // CHANGED: initialize search with header search query
+  const [search, setSearch] = useState(searchQuery);
+
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [sortBy, setSortBy] = useState("featured");
   const [viewMode, setViewMode] = useState("grid");
@@ -45,6 +51,11 @@ const Shop = () => {
       dispatch(fetchCategories());
     }
   }, [dispatch, products.length, categories.length]);
+
+  // CHANGED: sync header search query with existing Shop search
+  useEffect(() => {
+    setSearch(searchQuery);
+  }, [searchQuery]);
 
   const handleCategoryChange = (categoryId) => {
     setSelectedCategories((current) => {
@@ -96,6 +107,7 @@ const Shop = () => {
 
     return result;
   }, [products, search, selectedCategories, sortBy]);
+
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
 
   const startIndex = (currentPage - 1) * productsPerPage;
@@ -104,6 +116,7 @@ const Shop = () => {
     startIndex,
     startIndex + productsPerPage,
   );
+
   const getCategoryCount = (categoryId) => {
     return products.filter(
       (product) => Number(product.category_id) === Number(categoryId),
@@ -113,6 +126,7 @@ const Shop = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [search, selectedCategories, sortBy]);
+
   return (
     <section className="min-h-screen bg-[#FCFBF3]">
       <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-8">
@@ -120,9 +134,12 @@ const Shop = () => {
           <Link to="/dashboard" className="text-[#aaa39e] hover:text-[#8b3905]">
             Home
           </Link>
+
           <span className="text-[#c8c0ba]">/</span>
+
           <span className="text-[#211f1d] font-medium">All Products</span>
         </div>
+
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
           <div>
             <h1
@@ -165,6 +182,7 @@ const Shop = () => {
             </select>
           </div>
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-7 mt-8">
           <aside
             className="
@@ -344,6 +362,7 @@ const Shop = () => {
               )}
             </div>
           </aside>
+
           <main>
             {productsLoading ? (
               <Loading />
@@ -405,6 +424,7 @@ const Shop = () => {
             )}
           </main>
         </div>
+
         {/* Pagination*/}
         {totalPages > 1 && (
           <div className="w-full flex justify-center items-center mt-10">
@@ -418,18 +438,18 @@ const Shop = () => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="
-          px-4
-          py-2
-          rounded-lg
-          border
-          border-[#e5ded8]
-          bg-white
-          text-sm
-          text-[#403c39]
-          disabled:opacity-40
-          disabled:cursor-not-allowed
-          hover:border-[#8b3905]
-        "
+                  px-4
+                  py-2
+                  rounded-lg
+                  border
+                  border-[#e5ded8]
+                  bg-white
+                  text-sm
+                  text-[#403c39]
+                  disabled:opacity-40
+                  disabled:cursor-not-allowed
+                  hover:border-[#8b3905]
+                "
               >
                 Previous
               </button>
@@ -447,17 +467,17 @@ const Shop = () => {
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
                     className={`
-              w-10
-              h-10
-              rounded-lg
-              text-sm
-              font-medium
-              ${
-                currentPage === pageNumber
-                  ? "bg-[#8b3905] text-white"
-                  : "bg-white text-[#403c39] border border-[#e5ded8]"
-              }
-            `}
+                      w-10
+                      h-10
+                      rounded-lg
+                      text-sm
+                      font-medium
+                      ${
+                        currentPage === pageNumber
+                          ? "bg-[#8b3905] text-white"
+                          : "bg-white text-[#403c39] border border-[#e5ded8]"
+                      }
+                    `}
                   >
                     {pageNumber}
                   </button>
@@ -473,18 +493,18 @@ const Shop = () => {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
                 className="
-          px-4
-          py-2
-          rounded-lg
-          border
-          border-[#e5ded8]
-          bg-white
-          text-sm
-          text-[#403c39]
-          disabled:opacity-40
-          disabled:cursor-not-allowed
-          hover:border-[#8b3905]
-        "
+                  px-4
+                  py-2
+                  rounded-lg
+                  border
+                  border-[#e5ded8]
+                  bg-white
+                  text-sm
+                  text-[#403c39]
+                  disabled:opacity-40
+                  disabled:cursor-not-allowed
+                  hover:border-[#8b3905]
+                "
               >
                 Next
               </button>
@@ -495,4 +515,5 @@ const Shop = () => {
     </section>
   );
 };
+
 export default Shop;

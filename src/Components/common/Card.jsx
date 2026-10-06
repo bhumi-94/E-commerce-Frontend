@@ -27,7 +27,6 @@ const Card = ({ product }) => {
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
-
     dispatch(
       addProductToCart({
         product,
@@ -113,7 +112,8 @@ const Card = ({ product }) => {
         </p>
 
         <p className="text-[#211f1d] text-lg font-bold mt-3">
-          ₹{Number(product.price).toLocaleString("en-IN")}
+          ₹{Number(product.customer_price).toLocaleString("en-IN")}
+          {/* ₹{Number(product.price).toLocaleString("en-IN")} */}
         </p>
 
         {/* BUTTONS */}

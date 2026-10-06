@@ -49,16 +49,10 @@ const adminProductSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-
-      // =========================
-      // FETCH PRODUCTS
-      // =========================
-
       .addCase(fetchAdminProducts.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-
       .addCase(fetchAdminProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.products = action.payload.products || [];
@@ -68,10 +62,6 @@ const adminProductSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
-      // =========================
-      // ADD PRODUCT
-      // =========================
 
       .addCase(addAdminProduct.pending, (state) => {
         state.actionLoading = true;
