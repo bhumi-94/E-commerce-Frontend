@@ -24,12 +24,16 @@ const AdminAddProducts = () => {
     category_id: "",
     description: "",
     price: "",
+    platform_fee: "",
+    stock_quantity: "",
     is_featured: false,
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const customerPrice =
+    Number(formData.price || 0) + Number(formData.platform_fee || 0);
   useEffect(() => {
     if (!categories.length) {
       dispatch(fetchCategories());
@@ -96,6 +100,9 @@ const AdminAddProducts = () => {
     if (formData.price === "" || Number(formData.price) <= 0) {
       newErrors.price = "Enter a valid price.";
     }
+    if (formData.platform_fee === "" || Number(formData.platform_fee) < 0) {
+      newErrors.platform_fee = "Enter a valid platform fee.";
+    }
     if (!selectedImage) {
       newErrors.image = "Product image is required.";
     }
@@ -108,11 +115,18 @@ const AdminAddProducts = () => {
     if (!validateForm()) {
       return;
     }
+
+    if (formData.stock_quantity === "" || Number(formData.stock_quantity) < 0) {
+      alert("Please enter a valid stock quantity");
+      return;
+    }
     const data = new FormData();
     data.append("name", formData.name.trim());
     data.append("category_id", formData.category_id);
     data.append("description", formData.description.trim());
     data.append("price", formData.price);
+    data.append("platform_fee", formData.platform_fee);
+    data.append("stock_quantity" , formData.stock_quantity);
     data.append("is_featured", formData.is_featured ? "1" : "0");
     data.append("image", selectedImage);
     try {
@@ -671,29 +685,27 @@ const AdminAddProducts = () => {
               )}
             </div>
 
-            {/* PRICE*/}
-
             <div
               className="
-              grid
-              grid-cols-1
-              sm:grid-cols-2
-              gap-5
-            "
+                  grid
+                  grid-cols-1
+                  sm:grid-cols-2
+                  gap-5
+                "
             >
-              {/* PRICE */}
+              {/* PRODUCT PRICE */}
 
               <div>
                 <label
                   className="
-                  block
-                  text-sm
-                  font-medium
-                  text-[#55504c]
-                  mb-2
-                "
+                    block
+                    text-sm
+                    font-medium
+                    text-[#55504c]
+                    mb-2
+                  "
                 >
-                  Price
+                  Product Price
                 </label>
 
                 <div className="relative">
@@ -719,34 +731,170 @@ const AdminAddProducts = () => {
                     step="0.01"
                     placeholder="0.00"
                     className={`
-                      w-full
-                      h-12
-                      pl-9
-                      pr-4
-                      rounded-xl
-                      border
-                      ${errors.price ? "border-red-400" : "border-[#e7dfd8]"}
-                      outline-none
-                      text-sm
-                      focus:border-[#8b3905]
-                    `}
+                            w-full
+                            h-12
+                            pl-9
+                            pr-4
+                            rounded-xl
+                            border
+                            ${errors.price ? "border-red-400" : "border-[#e7dfd8]"}
+                            outline-none
+                            text-sm
+                            text-[#211f1d]
+                            focus:border-[#8b3905]
+                          `}
                   />
+                </div>
+                <div
+                  className="
+                    mt-5
+                    p-4
+                    rounded-xl
+                    bg-[#faf7f4]
+                    border
+                    border-[#eee7e1]
+                  "
+                >
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#77716d]">Product Price</span>
+
+                    <span className="font-medium text-[#211f1d]">
+                      ₹{Number(formData.price || 0).toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-sm mt-2">
+                    <span className="text-[#77716d]">Platform Fee</span>
+
+                    <span className="font-medium text-[#211f1d]">
+                      ₹{Number(formData.platform_fee || 0).toFixed(2)}
+                    </span>
+                  </div>
+
+                  <div className="border-t border-[#e7dfd8] mt-3 pt-3 flex items-center justify-between">
+                    <span className="font-semibold text-[#55504c]">
+                      Customer Price
+                    </span>
+
+                    <span className="text-lg font-bold text-[#8b3905]">
+                      ₹{customerPrice.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
 
                 {errors.price && (
-                  <p
+                  <p className="mt-1.5 text-xs text-red-500">{errors.price}</p>
+                )}
+              </div>
+
+              {/* PLATFORM FEE */}
+
+              <div>
+                <label
+                  className="
+                      block
+                      text-sm
+                      font-medium
+                      text-[#55504c]
+                      mb-2
+                    "
+                >
+                  Platform Fee
+                </label>
+
+                <div className="relative">
+                  <span
                     className="
-                    mt-1.5
-                    text-xs
-                    text-red-500
-                  "
+                      absolute
+                      left-4
+                      top-1/2
+                      -translate-y-1/2
+                      text-sm
+                      text-[#77716d]
+                    "
                   >
-                    {errors.price}
+                    ₹
+                  </span>
+
+                  <input
+                    type="number"
+                    name="platform_fee"
+                    value={formData.platform_fee}
+                    onChange={handleChange}
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    className={`
+                  w-full
+                  h-12
+                  pl-9
+                  pr-4
+                  rounded-xl
+                  border
+                  ${errors.platform_fee ? "border-red-400" : "border-[#e7dfd8]"}
+                  outline-none
+                  text-sm
+                  text-[#211f1d]
+                  focus:border-[#8b3905]
+                `}
+                  />
+                </div>
+
+                {errors.platform_fee && (
+                  <p className="mt-1.5 text-xs text-red-500">
+                    {errors.platform_fee}
                   </p>
                 )}
               </div>
             </div>
 
+            {/* stock  */}
+            <div className="mt-5">
+              <label
+                className="
+                block
+                text-sm
+                font-medium
+                text-[#55504c]
+                mb-2
+              "
+              >
+                Stock Quantity
+              </label>
+
+              <input
+                type="number"
+                name="stock_quantity"
+                value={formData.stock_quantity}
+                onChange={handleChange}
+                placeholder="Enter Stock Quantity"
+                className={`
+                  w-full
+                  h-12
+                  px-4
+                  rounded-xl
+                  border
+                  ${errors.name ? "border-red-400" : "border-[#e7dfd8]"}
+                  outline-none
+                  text-sm
+                  text-[#211f1d]
+                  placeholder:text-[#aaa39e]
+                  focus:border-[#8b3905]
+                `}
+              />
+
+              {errors.stock_quantity && (
+                <p
+                  className="
+                  mt-1.5
+                  text-xs
+                  text-red-500
+                "
+                >
+                  {errors.stock_quantity}
+                </p>
+              )}
+            </div>
             {/* FEATURED */}
 
             <div

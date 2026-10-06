@@ -7,7 +7,7 @@ export const fetchProducts = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await getProducts();
-    //   console.log("PRODUCT API RESPONSE:", response);
+      // console.log("PRODUCT API RESPONSE:", response);
 
       return response.products;
     } catch (error) {

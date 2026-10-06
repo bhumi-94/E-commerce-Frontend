@@ -8,9 +8,6 @@ import {
   clearCartApi,
 } from "./cart.api";
 
-// ==============================
-// FETCH CART
-// ==============================
 
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
@@ -30,18 +27,11 @@ export const fetchCart = createAsyncThunk(
   },
 );
 
-// ==============================
-// ADD PRODUCT TO CART
-// ==============================
-
 export const addProductToCart = createAsyncThunk(
   "cart/addProductToCart",
 
   async ({ product, quantity = 1 }, { rejectWithValue }) => {
     try {
-      // Important:
-      // Shop products have `id`
-      // Wishlist products may have `product_id`
 
       const productId = product?.product_id || product?.id;
 
@@ -66,11 +56,6 @@ export const addProductToCart = createAsyncThunk(
     }
   },
 );
-
-// ==============================
-// UPDATE QUANTITY
-// ==============================
-
 export const updateProductQuantity = createAsyncThunk(
   "cart/updateProductQuantity",
 
@@ -91,11 +76,6 @@ export const updateProductQuantity = createAsyncThunk(
     }
   },
 );
-
-// ==============================
-// REMOVE PRODUCT
-// ==============================
-
 export const removeProductFromCart = createAsyncThunk(
   "cart/removeProductFromCart",
 
@@ -117,9 +97,6 @@ export const removeProductFromCart = createAsyncThunk(
   },
 );
 
-// ==============================
-// CLEAR CART
-// ==============================
 
 export const clearCartFromDatabase = createAsyncThunk(
   "cart/clearCartFromDatabase",
@@ -139,9 +116,6 @@ export const clearCartFromDatabase = createAsyncThunk(
   },
 );
 
-// ==============================
-// INITIAL STATE
-// ==============================
 
 const initialState = {
   items: [],
@@ -150,9 +124,6 @@ const initialState = {
   error: null,
 };
 
-// ==============================
-// CART SLICE
-// ==============================
 
 const cartSlice = createSlice({
   name: "cart",
@@ -169,9 +140,6 @@ const cartSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    // ==========================
-    // FETCH
-    // ==========================
 
     builder
       .addCase(fetchCart.pending, (state) => {
@@ -190,10 +158,6 @@ const cartSlice = createSlice({
         state.error = action.payload;
       });
 
-    // ==========================
-    // ADD
-    // ==========================
-
     builder
       .addCase(addProductToCart.pending, (state) => {
         state.updating = true;
@@ -210,10 +174,6 @@ const cartSlice = createSlice({
         state.updating = false;
         state.error = action.payload;
       });
-
-    // ==========================
-    // UPDATE
-    // ==========================
 
     builder
       .addCase(updateProductQuantity.pending, (state) => {
@@ -232,10 +192,6 @@ const cartSlice = createSlice({
         state.error = action.payload;
       });
 
-    // ==========================
-    // REMOVE
-    // ==========================
-
     builder
       .addCase(removeProductFromCart.pending, (state) => {
         state.updating = true;
@@ -252,10 +208,6 @@ const cartSlice = createSlice({
         state.updating = false;
         state.error = action.payload;
       });
-
-    // ==========================
-    // CLEAR
-    // ==========================
 
     builder
       .addCase(clearCartFromDatabase.pending, (state) => {

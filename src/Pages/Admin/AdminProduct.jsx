@@ -267,8 +267,6 @@ const AdminProducts = () => {
               <option value="all">All Status</option>
 
               <option value="active">Active</option>
-
-              <option value="disabled">Disabled</option>
             </select>
           </div>
         </div>
@@ -289,6 +287,9 @@ const AdminProducts = () => {
 
                   <th className="text-left px-5 py-4 text-xs font-semibold text-[#77716d] uppercase">
                     Price
+                  </th>
+                  <th className="text-left px-5 py-4 text-xs font-semibold text-[#77716d] uppercase">
+                    Total Price
                   </th>
 
                   <th className="text-left px-5 py-4 text-xs font-semibold text-[#77716d] uppercase">
@@ -365,6 +366,13 @@ const AdminProducts = () => {
                         <td className="px-5 py-4">
                           <span className="font-medium text-[#211f1d]">
                             {formatPrice(product.price)}
+                          </span>
+                        </td>
+
+                        {/* Total Price */}
+                        <td className="px-5 py-4">
+                          <span className="font-medium text-[#211f1d]">
+                            {formatPrice(product.custprice)}
                           </span>
                         </td>
 

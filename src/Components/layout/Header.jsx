@@ -24,6 +24,7 @@ import { fetchNotifications } from "../../features/Notifications/notificationSli
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchTerm, setSearchTerm] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const profileRef = useRef(null);
@@ -91,6 +92,13 @@ const Header = () => {
     navigate(path);
   };
 
+  const handleSearch = (e) => {
+    if (e.key === "Enter") {
+      const value = searchTerm.trim();
+      if (!value) return;
+      navigate(`/shop?search=${encodeURIComponent(value)}`);
+    }
+  };
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
       <Banner />
@@ -177,19 +185,22 @@ const Header = () => {
 
               <input
                 type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={handleSearch}
                 placeholder="Search products, brands and categories..."
                 className="
                   w-full
-                  h-11
-                  rounded-[14px]
+                  h-10
+                  rounded-[12px]
                   border
                   border-[#e5e1de]
                   bg-[#fafafa]
                   pl-11
                   pr-4
+                  text-sm
                   outline-none
                   focus:border-[#8b3905]
-                  transition
                 "
               />
             </div>
@@ -565,6 +576,9 @@ const Header = () => {
 
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleSearch}
               placeholder="Search products, brands and categories..."
               className="
                 w-full
