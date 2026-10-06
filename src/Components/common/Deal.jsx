@@ -126,10 +126,9 @@ const Deal = ({ fullPage = false }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {dealProducts.map((product) => {
               const imageUrl = product.image
-                ? `http://localhost:3000${product.image}`
-                : null;
-
-              const discount = 20;
+                ? `${import.meta.env.VITE_BACKEND_URL}${product.image}`
+                : null;  
+            const discount = 20;
 
               const originalPrice =
                 Number(product.price) / (1 - discount / 100);

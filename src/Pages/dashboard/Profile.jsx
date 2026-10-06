@@ -41,9 +41,9 @@ const Profile = () => {
   const profileInitial = user.first_name?.charAt(0)?.toUpperCase() || "U";
 
   const profileImage = user.profile_image
-    ? `http://localhost:3000${user.profile_image}`
-    : null;
-
+  ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`
+  : null;
+  
   const navClass = ({ isActive }) =>
     `
       w-full

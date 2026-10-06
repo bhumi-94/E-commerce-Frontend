@@ -33,8 +33,7 @@ const Testimonials = () => {
     if (profileImage.startsWith("http")) {
       return profileImage;
     }
-
-    return `http://localhost:3000${profileImage}`;
+    return `${import.meta.env.VITE_BACKEND_URL}${profileImage}`;
   };
 
   if (loading) {

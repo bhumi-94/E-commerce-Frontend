@@ -33,7 +33,7 @@ const Wishlist = () => {
         quantity: 1,
       }),
     );
-  }
+  };
   const handleClearWishlist = () => {
     dispatch(clearWishlist());
   };
@@ -117,8 +117,9 @@ const Wishlist = () => {
             const productId = product.product_id;
 
             const imageUrl = product.image
-              ? `http://localhost:3000${product.image}`
+              ? `${import.meta.env.VITE_BACKEND_URL}${product.image}`
               : null;
+            
 
             const outOfStock = Number(product.stock_quantity) <= 0;
 

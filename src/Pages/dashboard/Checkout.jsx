@@ -137,7 +137,7 @@ const Checkout = () => {
 
     const cleanImage = image.replace(/^\/?uploads\/?/, "");
 
-    return `http://localhost:3000/uploads/${cleanImage}`;
+    return `${import.meta.env.VITE_BACKEND_URL}/uploads/${cleanImage}`;
   };
 
   const handlePlaceOrder = async () => {

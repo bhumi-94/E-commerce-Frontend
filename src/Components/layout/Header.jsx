@@ -70,9 +70,8 @@ const Header = () => {
     : "User";
 
   const profileImage = user?.profile_image
-    ? `http://localhost:3000/${user.profile_image.replace(/^\/+/, "")}`
+    ? `${import.meta.env.VITE_BACKEND_URL}/${user.profile_image.replace(/^\/+/, "")}`
     : null;
-
   const handleLogout = async () => {
     try {
       await dispatch(logoutUserThunk()).unwrap();

@@ -38,7 +38,9 @@ const ProfileHome = () => {
       });
 
       if (user.profile_image) {
-        setPreviewImage(`http://localhost:3000${user.profile_image}`);
+        setPreviewImage(
+          `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`,
+        );
       } else {
         setPreviewImage(null);
       }
@@ -120,13 +122,13 @@ const ProfileHome = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
-
     if (user?.profile_image) {
-      setPreviewImage(`http://localhost:3000${user.profile_image}`);
+      setPreviewImage(
+        `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`,
+      );
     } else {
       setPreviewImage(null);
     }
-
     if (user) {
       setFormData({
         first_name: user.first_name || "",

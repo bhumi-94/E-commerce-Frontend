@@ -244,8 +244,9 @@ const Home = () => {
                 const Icon = getCategoryIcon(category.name);
 
                 const imageUrl = category.image
-                  ? `http://localhost:3000${category.image}`
+                  ? `${import.meta.env.VITE_BACKEND_URL}${category.image}`
                   : null;
+                  
 
                 return (
                   <Link
@@ -408,7 +409,7 @@ const Home = () => {
         <Newsletter />
         <FeedbackSection />
       </div>
-</section>
+    </section>
   );
 };
 

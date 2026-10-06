@@ -104,12 +104,12 @@ const AdminProducts = () => {
     if (image.startsWith("http://") || image.startsWith("https://")) {
       return image;
     }
-
     if (image.startsWith("/uploads")) {
-      return `http://localhost:3000${image}`;
+      return `${import.meta.env.VITE_BACKEND_URL}${image}`;
     }
 
-    return `http://localhost:3000/uploads/products/${image}`;
+    return `${import.meta.env.VITE_BACKEND_URL}/uploads/products/${image}`;
+    
   };
 
   // Price format
