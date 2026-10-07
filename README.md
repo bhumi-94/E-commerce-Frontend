@@ -1,72 +1,47 @@
 # 🛍️ Nexora — E-Commerce Frontend
 
-Nexora is a modern and responsive e-commerce web application built with **React.js and Vite**. It provides a complete shopping experience with authentication, product browsing, cart management, wishlist, orders, profile management, and more.
+Nexora is a modern, responsive e-commerce frontend built with **React.js and Vite**. It provides a complete shopping experience with authentication, product browsing, cart, wishlist, orders, profile management, and admin functionality.
 
-The frontend communicates with the Nexora REST API backend for authentication, products, users, orders, payments, and other application features.
+## 🚀 Live Application
 
----
+**Frontend:** https://e-commerce-frontend-six-neon.vercel.app/
 
-## 🚀 Live Demo
-
-🌐 **Frontend:**  
-https://e-commerce-frontend-six-neon.vercel.app/
-
-⚙️ **Backend API:**  
-https://e-commerce-backend-71hj.onrender.com/
-
----
+**Backend API:** https://e-commerce-backend-71hj.onrender.com/
 
 ## ✨ Features
 
-- 🔐 User Registration & Login
-- 🔑 JWT-based Authentication
-- 🔵 Google Authentication
-- 👤 User Profile Management
-- 🛍️ Product Browsing
-- 🔎 Product Search & Filtering
-- 🛒 Shopping Cart
+- 🔐 User registration and login
+- 🔵 Google authentication
+- 👤 Profile management
+- 🛍️ Product browsing and search
+- 🛒 Shopping cart
 - ❤️ Wishlist
-- 📦 Order Management
-- 💳 Payment Method Management
-- 📍 Address Management
+- 📦 Order management
+- 💳 Payment method management
+- 📍 Address management
 - 🔔 Notifications
-- ⚙️ User Settings
-- 👨‍💼 Admin Product Management
-- 👥 Admin User Management
-- 📱 Fully Responsive Design
-- 🚀 Production Deployment with Vercel
-
----
+- ⚙️ User settings
+- 👨‍💼 Admin product and user management
+- 📱 Responsive design
+- 🔗 REST API integration
 
 ## 🛠️ Tech Stack
-
-### Frontend
 
 - React.js
 - Vite
 - JavaScript
 - Tailwind CSS
-- HTML5
-- CSS3
-
-### Libraries & Tools
-
 - Axios
 - React Router
-- Redux / State Management
+- Redux / state management
 - Google Authentication
-- Git
-- GitHub
+- Git & GitHub
 - Vercel
-- VS Code
-
----
 
 ## 📁 Project Structure
 
 ```text
 src/
-│
 ├── components/
 ├── pages/
 ├── layouts/
@@ -75,7 +50,93 @@ src/
 ├── store/
 ├── utils/
 ├── assets/
-│
 ├── App.jsx
-├── main.jsx
-└── ...
+└── main.jsx
+```
+
+## ⚙️ Installation
+
+### 1. Clone the repository
+
+```bash
+git clone YOUR_FRONTEND_REPOSITORY_URL
+cd nexora-ecommerce-frontend
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Create `.env`
+
+```env
+VITE_API_URL=http://localhost:5000/api
+VITE_BACKEND_URL=http://localhost:5000
+VITE_GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID
+```
+
+### 4. Start the development server
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:5173
+```
+
+## 🔐 Environment Variables
+
+Never commit `.env` files or secrets to GitHub.
+
+Recommended `.gitignore` entries:
+
+```gitignore
+.env
+.env.local
+.env.*.local
+node_modules/
+dist/
+```
+
+## 🌐 Deployment
+
+The frontend is deployed on **Vercel**.
+
+Production environment variables should be configured in:
+
+```text
+Vercel → Project → Settings → Environment Variables
+```
+
+After changing `VITE_*` variables, redeploy the application.
+
+## 🔗 Backend
+
+The frontend consumes the Nexora REST API:
+
+```text
+https://e-commerce-backend-71hj.onrender.com/api
+```
+
+The API handles authentication, users, products, cart, wishlist, orders, addresses, payments, notifications, and admin operations.
+
+## 🎯 Project Goal
+
+Nexora was built to practice and demonstrate real-world frontend development, responsive UI design, authentication, state management, API integration, and production deployment.
+
+## 👩‍💻 Author
+
+**Bhoomi Kaushik**
+
+B.Tech Computer Science & Engineering
+
+GitHub: https://github.com/bhumi-94
+
+---
+
+⭐ If you like the project, consider giving the repository a star.
