@@ -99,20 +99,16 @@ const GoogleIcon = () => (
   </svg>
 );
 
-// ================= LOGIN =================
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // ================= GOOGLE =================
 
   const googleButtonRef = useRef(null);
   const googleInitialized = useRef(false);
 
   const [googleLoading, setGoogleLoading] = useState(false);
 
-  // ================= FORM =================
 
   const [formData, setFormData] = useState({
     email: "",
@@ -126,7 +122,6 @@ const Login = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // ================= NORMAL LOGIN =================
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -187,7 +182,6 @@ const Login = () => {
     }
   };
 
-  // ================= GOOGLE LOGIN =================
 
   const handleGoogleLogin = async (credential) => {
     try {
@@ -211,10 +205,8 @@ const Login = () => {
 
       setSuccess(response.data?.message || "Google login successful!");
 
-      // Fetch the logged-in Nexora user
       await dispatch(fetchProfile()).unwrap();
 
-      // Go to dashboard
       navigate("/dashboard", { replace: true });
     } catch (error) {
       console.error("Google login error:", error);
@@ -228,8 +220,6 @@ const Login = () => {
       setGoogleLoading(false);
     }
   };
-
-  // ================= GOOGLE INITIALIZATION =================
 
   useEffect(() => {
     let intervalId;
@@ -247,7 +237,6 @@ const Login = () => {
 
       if (!clientId) {
         console.error("VITE_GOOGLE_CLIENT_ID is missing from frontend .env");
-
         setError("Google login is not configured.");
 
         return;

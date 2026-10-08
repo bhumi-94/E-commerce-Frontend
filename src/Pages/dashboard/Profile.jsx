@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearProfile } from "../../features/profile/ProfileSlice";
 import { logoutUserThunk } from "../../features/auth/authSlice";
 import { useNavigate, NavLink, Outlet } from "react-router-dom";
+import getImageUrl from "../../utils/imageUrl";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -39,11 +40,8 @@ const Profile = () => {
   }
 
   const profileInitial = user.first_name?.charAt(0)?.toUpperCase() || "U";
+  const profileImage = getImageUrl(user?.profile_image);
 
-  const profileImage = user.profile_image
-  ? `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`
-  : null;
-  
   const navClass = ({ isActive }) =>
     `
       w-full

@@ -20,6 +20,7 @@ import Logo from "../common/Logo";
 import { clearProfile } from "../../features/profile/ProfileSlice";
 import { logoutUserThunk } from "../../features/auth/authSlice";
 import { fetchNotifications } from "../../features/Notifications/notificationSlice";
+import getImageUrl  from "../../utils/imageUrl";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -68,10 +69,7 @@ const Header = () => {
   const userName = user
     ? `${user.first_name || ""} ${user.last_name || ""}`.trim()
     : "User";
-
-  const profileImage = user?.profile_image
-    ? `${import.meta.env.VITE_BACKEND_URL}/${user.profile_image.replace(/^\/+/, "")}`
-    : null;
+  const profileImage = getImageUrl(user?.profile_image);
   const handleLogout = async () => {
     try {
       await dispatch(logoutUserThunk()).unwrap();

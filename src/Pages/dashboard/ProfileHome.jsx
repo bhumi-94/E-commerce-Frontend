@@ -3,6 +3,7 @@ import { Edit, CheckCircle, Camera } from "lucide-react";
 import Loading from "../../Components/common/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { saveProfile } from "../../features/profile/ProfileSlice";
+import getImageUrl from "../../utils/imageUrl";
 
 const ProfileHome = () => {
   const dispatch = useDispatch();
@@ -36,11 +37,8 @@ const ProfileHome = () => {
           : "",
         gender: user.gender || "",
       });
-
-      if (user.profile_image) {
-        setPreviewImage(
-          `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`,
-        );
+      if (user?.profile_image) {
+        setPreviewImage(getImageUrl(user.profile_image));
       } else {
         setPreviewImage(null);
       }
@@ -123,9 +121,7 @@ const ProfileHome = () => {
       fileInputRef.current.value = "";
     }
     if (user?.profile_image) {
-      setPreviewImage(
-        `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`,
-      );
+      setPreviewImage(getImageUrl(user.profile_image));
     } else {
       setPreviewImage(null);
     }

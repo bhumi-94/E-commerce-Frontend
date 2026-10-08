@@ -37,14 +37,16 @@ const AdminUsers = () => {
 
   const getImageUrl = (image) => {
     if (!image) {
-      return null;
-    }
-    if (image.startsWith("/uploads/")) {
-      return `${import.meta.env.VITE_BACKEND_URL}${image}`;
+      return "";
     }
 
-    return `${import.meta.env.VITE_BACKEND_URL}/uploads/${image}`;}
-    
+    if (image.startsWith("http://") || image.startsWith("https://")) {
+      return image;
+    }
+
+    return `${import.meta.env.VITE_BACKEND_URL}${image}`;
+  };
+
   const handleDismiss = (userId, userName) => {
     const confirmed = window.confirm(
       `Are you sure you want to disable ${userName}?`,
