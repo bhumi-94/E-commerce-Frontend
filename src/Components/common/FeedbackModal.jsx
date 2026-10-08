@@ -14,17 +14,18 @@ const FeedbackModal = ({ isOpen, onClose }) => {
   if (!isOpen) {
     return null;
   }
-  const getProfileImage = () => {
-    if (!user?.profile_image) {
-      return null;
-    }
+  const getProfileImage = (image) => {
+  if (!image) {
+    return null;
+  }
 
-    if (user.profile_image.startsWith("http")) {
-      return user.profile_image;
-    }
-    return `${import.meta.env.VITE_BACKEND_URL}${user.profile_image}`;
-  };
+  if (image.startsWith("http://") || image.startsWith("https://")) {
+    return image;
+  }
+  return `${import.meta.env.VITE_BACKEND_URL}${image}`;
+};
 
+const profileImage = getProfileImage(user?.profile_image);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
