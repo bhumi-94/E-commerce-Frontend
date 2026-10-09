@@ -18,7 +18,9 @@ const Card = ({ product }) => {
     (item) => Number(item.product_id) === Number(product.id),
   );
   const imageUrl = product.image
-    ? `${import.meta.env.VITE_BACKEND_URL}${product.image}`
+    ? product.image.startsWith("http")
+      ? product.image
+      : `${import.meta.env.VITE_BACKEND_URL}${product.image}`
     : null;
 
   const handleCardClick = () => {
@@ -70,17 +72,15 @@ const Card = ({ product }) => {
     >
       {/* IMAGE */}
       <div className="relative w-full h-48 bg-[#f7f5f2]">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={product.name}
-            className="w-full h-full object-cover"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-[#aaa39e]">
-            No Image
-          </div>
-        )}
+        <img
+          src={imageUrl}
+          alt={product.name}
+          onError={(e) => {
+            console.error("Product image failed:", imageUrl);
+            e.currentTarget.style.display = "none";
+          }}
+          className="w-full h-full object-cover"
+        />
 
         {/* WISHLIST */}
         <button
@@ -113,7 +113,6 @@ const Card = ({ product }) => {
 
         <p className="text-[#211f1d] text-lg font-bold mt-3">
           ₹{Number(product.customer_price).toLocaleString("en-IN")}
-          {/* ₹{Number(product.price).toLocaleString("en-IN")} */}
         </p>
 
         {/* BUTTONS */}
