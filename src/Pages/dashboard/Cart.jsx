@@ -53,25 +53,22 @@ const Cart = () => {
   const handleClearCart = () => {
     dispatch(clearCartFromDatabase());
   };
-  const subtotal = cartItems.reduce(
-    (total, item) => total + Number(item.price) * Number(item.quantity),
-
-    0,
+  const getItemPrice = (item) =>
+  Number(
+    item.customer_price ??
+    item.price ??
+    item.product?.customer_price ??
+    item.product?.price ??
+    0
   );
-  const shipping = subtotal >= 999 ? 0 : 99;
-  const gst = subtotal * 0.1;
-  const total = subtotal + shipping + gst;
-  if (loading) {
-    return (
-      <section className="min-h-screen bg-[#FCFBF3] flex items-center justify-center px-6">
-        <div className="text-center">
-          <div className="w-10 h-10 border-4 border-[#e5ddd5] border-t-[#8b3905] rounded-full animate-spin mx-auto" />
 
-          <p className="mt-4 text-[#77716d]">Loading your cart...</p>
-        </div>
-      </section>
-    );
-  }
+const subtotal = cartItems.reduce((total, item) => {
+  const price = getItemPrice(item);
+  const quantity = Number(item.quantity) || 0;
+
+  return total + price * quantity;
+}, 0);
+
 
   if (cartItems.length === 0) {
     return (
@@ -146,7 +143,9 @@ const Cart = () => {
           <div className="space-y-5">
             {cartItems.map((item) => {
               const imageUrl = item.image
-                ? `${import.meta.env.VITE_BACKEND_URL}${item.image}`
+                ? item.image.startsWith("http")
+                  ? item.image
+                  : `${import.meta.env.VITE_BACKEND_URL}${item.image}`
                 : null;
 
               const quantity = Number(item.quantity);
