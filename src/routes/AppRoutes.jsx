@@ -29,6 +29,7 @@ import OrderDetails from "../Pages/dashboard/OrderDetails";
 import AdminUsers from "../Pages/Admin/AdminUsers";
 import AdminProduct from "../Pages/Admin/AdminProduct";
 import AdminAddProducts from "../Pages/Admin/AdminAddProducts";
+import Chatbot from "../Components/chatbot/chatbot";
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useSelector((state) => state.profile);
@@ -155,6 +156,7 @@ const AppRoutes = () => {
 
       <Route path="*" element={<ErrorPage />} />
     </Routes>
+    
   );
 };
 
