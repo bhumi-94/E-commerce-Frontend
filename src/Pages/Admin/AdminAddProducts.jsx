@@ -6,6 +6,7 @@ import {
   PackagePlus,
   Loader2,
   CheckCircle,
+  Sparkles,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +33,8 @@ const AdminAddProducts = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
   const customerPrice =
     Number(formData.price || 0) + Number(formData.platform_fee || 0);
   useEffect(() => {
@@ -51,6 +54,80 @@ const AdminAddProducts = () => {
       [name]: "",
     }));
   };
+  const handleGenerateDescription = async () => {
+    if (!formData.name.trim()) {
+      setAiError("Please enter a product name first.");
+      return;
+    }
+
+    setAiLoading(true);
+    setAiError("");
+
+    try {
+      const selectedCategory = categories.find(
+        (category) => String(category.id) === String(formData.category_id),
+      );
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/ai/generate-description`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name.trim(),
+            category: selectedCategory?.name || "",
+            price: formData.price || "",
+            features: formData.description.trim(),
+          }),
+        },
+      );
+
+      // const result = await response.json();
+
+      const responseText = await response.text();
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch {
+        console.error(
+          "AI endpoint returned HTML or invalid JSON:",
+          response.url,
+          response.status,
+          responseText.slice(0, 500),
+        );
+        throw new Error(
+          `AI endpoint returned a non-JSON response (HTTP ${response.status}). Check the backend URL and route.`,
+        );
+      }
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to generate description.");
+      }
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to generate description.");
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        description: result.description,
+      }));
+
+      setErrors((prev) => ({
+        ...prev,
+        description: "",
+      }));
+    } catch (error) {
+      console.error("AI DESCRIPTION ERROR:", error);
+      setAiError(
+        error.message || "Unable to generate description. Please try again.",
+      );
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -126,7 +203,7 @@ const AdminAddProducts = () => {
     data.append("description", formData.description.trim());
     data.append("price", formData.price);
     data.append("platform_fee", formData.platform_fee);
-    data.append("stock_quantity" , formData.stock_quantity);
+    data.append("stock_quantity", formData.stock_quantity);
     data.append("is_featured", formData.is_featured ? "1" : "0");
     data.append("image", selectedImage);
     try {
@@ -139,9 +216,7 @@ const AdminAddProducts = () => {
         price: "",
         is_featured: false,
       });
-
       removeImage();
-
       setTimeout(() => {
         navigate("/admin/products");
       }, 1200);
@@ -636,8 +711,59 @@ const AdminAddProducts = () => {
             </div>
 
             {/* DESCRIPTION */}
-
             <div className="mb-5">
+              {" "}
+              <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                {" "}
+                <label className="block text-sm font-medium text-[#55504c]">
+                  {" "}
+                  Product Description{" "}
+                </label>{" "}
+                <button
+                  type="button"
+                  onClick={handleGenerateDescription}
+                  disabled={aiLoading || !formData.name.trim()}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#8b3905] px-4 py-2.5 text-sm font-medium text-white transition hover:bg-[#742f04] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {" "}
+                  {aiLoading ? (
+                    <>
+                      {" "}
+                      <Loader2 size={16} className="animate-spin" />{" "}
+                      Generating...{" "}
+                    </>
+                  ) : (
+                    <>
+                      {" "}
+                      <Sparkles size={16} /> Generate with AI{" "}
+                    </>
+                  )}{" "}
+                </button>{" "}
+              </div>{" "}
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={5}
+                placeholder="Enter a description or generate one using AI"
+                className={`w-full rounded-xl border px-4 py-3 text-sm text-[#211f1d] outline-none resize-none focus:border-[#8b3905] ${errors.description ? "border-red-400" : "border-[#e7dfd8]"}`}
+              />{" "}
+              {aiError && (
+                <p className="mt-2 text-sm text-red-500"> {aiError} </p>
+              )}{" "}
+              {errors.description && (
+                <p className="mt-1.5 text-xs text-red-500">
+                  {" "}
+                  {errors.description}{" "}
+                </p>
+              )}{" "}
+              <p className="mt-2 text-xs text-[#918a85]">
+                {" "}
+                Enter the product name first. AI will create a description that
+                you can review and edit before adding the product.{" "}
+              </p>{" "}
+            </div>
+            {/* <div className="mb-5">
               <label
                 className="
                 block
@@ -683,7 +809,7 @@ const AdminAddProducts = () => {
                   {errors.description}
                 </p>
               )}
-            </div>
+            </div> */}
 
             <div
               className="
