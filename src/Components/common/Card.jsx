@@ -2,13 +2,12 @@ import React from "react";
 import { Heart, ShoppingCart } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import { addProductToCart } from "../../features/cart/cartSlice";
-
 import {
   addToWishlist,
   removeFromWishlist,
 } from "../../features/wishlist/wishlistSlice";
+import getImageUrl from "../../utils/imageUrl";
 
 const Card = ({ product }) => {
   const navigate = useNavigate();
@@ -72,9 +71,16 @@ const Card = ({ product }) => {
       <div className="relative w-full h-48 bg-[#f7f5f2]">
         {imageUrl ? (
           <img
-            src={imageUrl}
+            src={getImageUrl(product.image)}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              console.error("Product image failed to load:", {
+                productId: product.id,
+                image: product.image,
+                attemptedUrl: e.currentTarget.src,
+              });
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-[#aaa39e]">

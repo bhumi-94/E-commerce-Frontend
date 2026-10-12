@@ -8,6 +8,7 @@ import {
   clearWishlist,
 } from "../../features/wishlist/wishlistSlice";
 import { addProductToCart } from "../../features/cart/cartSlice";
+import getImageUrl from "../../utils/imageUrl";
 
 const Wishlist = () => {
   const dispatch = useDispatch();
@@ -119,7 +120,6 @@ const Wishlist = () => {
             const imageUrl = product.image
               ? `${import.meta.env.VITE_BACKEND_URL}${product.image}`
               : null;
-            
 
             const outOfStock = Number(product.stock_quantity) <= 0;
 
@@ -134,9 +134,16 @@ const Wishlist = () => {
                   <div className="h-64 bg-[#f7f5f2] relative overflow-hidden">
                     {imageUrl ? (
                       <img
-                        src={imageUrl}
+                        src={getImageUrl(product.image)}
                         alt={product.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                        className="h-full w-full object-cover"
+                        onError={(e) => {
+                          console.error("Product image failed to load:", {
+                            productId: product.id,
+                            image: product.image,
+                            attemptedUrl: e.currentTarget.src,
+                          });
+                        }}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">

@@ -8,6 +8,7 @@ import {
   removeProductFromCart,
   clearCartFromDatabase,
 } from "../../features/cart/cartSlice";
+import getImageUrl from "../../utils/imageUrl";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -165,10 +166,17 @@ const Cart = () => {
                   >
                     {imageUrl ? (
                       <img
-                        src={imageUrl}
-                        alt={item.name}
-                        className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                      />
+                  src={getImageUrl(item.image)}
+                  alt={item.name}
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    console.error("Product image failed to load:", {
+                      productId: product.id,
+                      image: product.image,
+                      attemptedUrl: e.currentTarget.src,
+                    });
+                  }}
+                />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-sm text-gray-400">
                         No Image
