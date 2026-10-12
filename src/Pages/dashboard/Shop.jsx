@@ -104,14 +104,10 @@ const Shop = () => {
     if (sortBy === "featured") {
       result.sort((a, b) => Number(b.is_featured) - Number(a.is_featured));
     }
-
     return result;
   }, [products, search, selectedCategories, sortBy]);
-
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-
   const startIndex = (currentPage - 1) * productsPerPage;
-
   const paginatedProducts = filteredProducts.slice(
     startIndex,
     startIndex + productsPerPage,
